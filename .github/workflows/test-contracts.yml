@@ -1,0 +1,72 @@
+name: Test contracts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'contracts/**'
+      - '.github/workflows/test-contracts.yml'
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  lint:
+    strategy:
+      fail-fast: true
+
+    name: Solhint linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+      
+      - name: Install solhint
+        run: npm install -g solhint
+
+      - name: Run solhint
+        working-directory: ./contracts/
+        run: solhint 'src/**/*.sol' 'test/**/*.sol' 'script/**/*.sol'
+
+  test:
+    strategy:
+      fail-fast: true
+
+    name: Chalcedony contracts tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./local-setup/docker-compose.yml"
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: ./contracts/yarn.lock
+
+      - name: Install deps
+        working-directory: ./contracts
+        run: corepack enable && yarn install --frozen-lockfile
+        
+      - name: Run build
+        working-directory: ./contracts/
+        run: yarn hardhat compile
+        id: build
+
+      - name: Wait for test blockchain to be up
+        run: timeout 5m sh -c 'until curl -s localhost:3050; do sleep 1; done'
+
+      - name: Run tests
+        working-directory: ./contracts/
+        run: yarn test
+        id: test

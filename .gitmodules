@@ -1,3 +1,14 @@
 [submodule "contracts/lib/forge-std"]
 	path = contracts/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+	branch = v1.6.1
+[submodule "contracts/lib/openzeppelin-contracts"]
+	path = contracts/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+	branch = v4.8.1
+[submodule "contracts/lib/era-system-contracts"]
+	path = contracts/lib/era-system-contracts
+	url = https://github.com/matter-labs/era-system-contracts
+[submodule "local-setup"]
+	path = local-setup
+	url = git@github.com:matter-labs/local-setup.git
