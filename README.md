@@ -12,3 +12,5 @@
     * `cd chalcedony/app && yarn && yarn run dev`
 5. Setup [our contracts](./contracts/README.md)
     * `cd chalcedony/contracts && yarn && yarn hardhat compile`
+
+`main` is automatically deployed to https://chalcedony.vercel.app/
