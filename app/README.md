@@ -9,8 +9,10 @@ What we have:
 * [Web3 Onboard](https://onboard.blocknative.com/docs/overview/introduction) for wallet connections
 * [zkSync SDK](https://docs.zksync.io/api/sdk/js/) for chain integration
 * [eslint](https://docs.zksync.io/api/sdk/) for linting
-* Vercel for deployment (TODO)
-
+* [Vercel](https://vercel.com/) for deployment
+  * [main branch deployment](https://chalcedony.vercel.app/)
+  * preview deployments are created automatically for PRs - check comments in PRs left by Vercel
+  
 ## Setup
 
 You need Node.js v18 or newer + yarn .
