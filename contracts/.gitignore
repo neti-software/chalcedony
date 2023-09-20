@@ -10,6 +10,7 @@ node_modules/
 # hardhat artifacts
 artifacts
 cache
+typechain-types
 
 # zksync artifacts
 artifacts-zk

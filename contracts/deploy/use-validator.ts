@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // load contract artifact. Make sure to compile first!
-import * as ContractArtifact from "../artifacts-zk/contracts/Greeter.sol/Greeter.json";
+import * as ContractArtifact from "../artifacts-zk/contracts/Validator.sol/Validator.json";
 
 const PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY || "";
 
@@ -36,15 +36,5 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   );
 
   // Read message from contract
-  console.log(`The message is ${await contract.greet()}`);
-
-  // send transaction to update the message
-  const newMessage = "Hello people!";
-  const tx = await contract.setGreeting(newMessage);
-
-  console.log(`Transaction to change the message is ${tx.hash}`);
-  await tx.wait();
-
-  // Read message after transaction
-  console.log(`The message now is ${await contract.greet()}`);
+  console.log(`The verification result is ${await contract.verifyVCSignature(FIXME)}`);
 }
