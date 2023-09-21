@@ -1,0 +1,16 @@
+{
+  "name": "chalcedony-vcs",
+  "packageManager": "yarn@3.6.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "dependencies": {
+    "ethers": "5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.3",
+    "typescript": "^5.2.2"
+  }
+}

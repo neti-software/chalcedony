@@ -52,11 +52,22 @@ jobs:
         with:
           node-version: 18
           cache: 'yarn'
-          cache-dependency-path: ./contracts/yarn.lock
+          cache-dependency-path: '**/yarn.lock'
 
-      - name: Install deps
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install chalcedony-vcs deps
+        working-directory: ./chalcedony-vcs
+        run: yarn install --immutable
+
+      - name: Build chalcedony-vcs
+        working-directory: ./chalcedony-vcs
+        run: yarn tsc
+
+      - name: Install contracts deps
         working-directory: ./contracts
-        run: corepack enable && yarn install --frozen-lockfile
+        run: yarn install --immutable
         
       - name: Run build
         working-directory: ./contracts/
