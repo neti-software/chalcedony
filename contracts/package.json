@@ -17,6 +17,7 @@
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.8",
+    "chalcedony-vcs": "link:../chalcedony-vcs",
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "hardhat": "^2.12.4",
@@ -33,6 +34,7 @@
     "lint": "solhint 'contracts/**/*.sol' 'test/**/*.sol' 'deploy/**/*.sol'"
   },
   "dependencies": {
+    "@matterlabs/zksync-contracts": "^0.6.1",
     "@openzeppelin/contracts": "^4.9.3"
   }
 }

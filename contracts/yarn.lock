@@ -602,6 +602,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@matterlabs/zksync-contracts@npm:^0.6.1":
+  version: 0.6.2
+  resolution: "@matterlabs/zksync-contracts@npm:0.6.2"
+  peerDependencies:
+    "@openzeppelin/contracts": 4.6.0
+    "@openzeppelin/contracts-upgradeable": 4.6.0
+  checksum: 971249b1c05590254df5544ae0a9d0b9e6956d565311daff2c515c829d8bd43838d486f76d483241f86183fe80a1d35029758d6c756c23c3bbfb249870ec7ea7
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-sig-util@npm:^4.0.0":
   version: 4.0.1
   resolution: "@metamask/eth-sig-util@npm:4.0.1"
@@ -1973,6 +1983,7 @@ __metadata:
     "@matterlabs/hardhat-zksync-deploy": ^0.6.5
     "@matterlabs/hardhat-zksync-solc": ^0.4.2
     "@matterlabs/hardhat-zksync-verify": ^0.1.8
+    "@matterlabs/zksync-contracts": ^0.6.1
     "@nomicfoundation/hardhat-chai-matchers": ^2.0.2
     "@nomiclabs/hardhat-ethers": ^2.2.3
     "@nomiclabs/hardhat-etherscan": ^3.1.7
@@ -1982,6 +1993,7 @@ __metadata:
     "@types/chai": ^4.3.4
     "@types/mocha": ^10.0.1
     chai: ^4.3.8
+    chalcedony-vcs: "link:../chalcedony-vcs"
     dotenv: ^16.0.3
     ethers: ^5.7.2
     hardhat: ^2.12.4
@@ -1992,6 +2004,12 @@ __metadata:
     typescript: ^4.9.4
     zksync-web3: ^0.14.3
   languageName: unknown
+  linkType: soft
+
+"chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A."
+  languageName: node
   linkType: soft
 
 "chalk@npm:4.1.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
