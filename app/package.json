@@ -11,14 +11,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/node": "^20.6.3",
     "@web3-onboard/core": "^2.21.1",
     "@web3-onboard/injected-wallets": "^2.10.6",
     "@web3-onboard/react": "^2.8.12",
     "autoprefixer": "^10.4.15",
-    "ethers": "5",
+    "classnames": "^2.3.2",
     "postcss": "^8.4.29",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.16.0",
+    "react-toastify": "^9.1.3",
     "tailwindcss": "^3.3.3",
     "zksync-web3": "^0.14.3"
   },
@@ -31,6 +35,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "sass": "^1.67.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
