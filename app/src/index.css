@@ -35,6 +35,15 @@
    font-stretch: normal;
 }
 
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins-Italic"),
+   url("./fonts/Poppins-Italic.ttf") format("truetype");
+   font-weight: 250;
+   font-style: italic;
+   font-stretch: normal;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   color-scheme: light dark;

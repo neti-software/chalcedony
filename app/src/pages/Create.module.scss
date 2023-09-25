@@ -3,89 +3,9 @@
   flex-direction: column;
 
   .distribute {
-    margin: 77px 0 77px;
+    padding: 77px 0 77px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .addNew {
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    input {
-      color: #000;
-      background-color: transparent;
-    }
-  }
-
-  .list {
-    display: flex;
-    flex-direction: column;
-
-    .tableContainer {
-      color: black;
-      display: flex;
-      flex-flow: column nowrap;
-      background-color: white;
-      border-radius: 4px;
-      border: 1px solid #dadada;
-      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08);
-
-      .tableRow {
-        display: flex;
-        flex-flow: row nowrap;
-        width: 100%;
-        border-bottom: 1px solid #dadada;
-
-        .rowItem {
-          display: flex;
-          padding: 8px 0;
-          justify-content: center;
-          align-items: center;
-
-          &:first-child {
-            width: 5%;
-          }
-
-          &:nth-child(2) {
-            width: 15%;
-          }
-
-          &:nth-child(3) {
-            width: 40%;
-          }
-
-          &:nth-child(4) {
-            width: 30%;
-          }
-
-          &:nth-child(5) {
-            width: 10%;
-          }
-        }
-      }
-
-      .header {
-        background-color: #ececec;
-        color: #3e3e3e;
-        font-weight: bold;
-      }
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-
-      div {
-        margin-right: 20px;
-      }
-
-      button {
-        width: 150px;
-        height: 50px;
-        cursor: pointer;
-      }
-    }
   }
 }

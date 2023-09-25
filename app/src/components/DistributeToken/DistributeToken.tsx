@@ -3,7 +3,7 @@ import { useWeb3Onboard } from "@web3-onboard/react/dist/context";
 import classNames from "classnames";
 import { ChangeEvent, FC, useContext, useState } from "react";
 import { useERC20Function } from "../../helpers/queries";
-import { TESTNET_TOKEN_LIST } from "../../helpers/tokensList";
+import { ASSETS_ICONS, TESTNET_TOKEN_LIST } from "../../helpers/tokensList";
 import one from "../../images/DistributeToken/1.png";
 import amount from "../../images/DistributeToken/2.00ETH.png";
 import two from "../../images/DistributeToken/2.png";
@@ -19,6 +19,7 @@ import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
 import { MainContext } from "../../context";
 import { ethers } from "ethers";
+import customAssetIcon from "../../images/DistributeToken/customIcon.png";
 
 const steps: Array<{
   step: string;
@@ -56,12 +57,10 @@ type QrCodeInput = {
 };
 
 const DistributeToken: FC = () => {
-  const [tokensList, setTokenList] =
-    useState<Array<string>>(TESTNET_TOKEN_LIST);
+  const [tokensList] = useState<Array<string>>(TESTNET_TOKEN_LIST);
 
   const [selectedToken, setSelectedToken] = useState<string>(tokensList[0]);
   const [step, setStep] = useState<number>(1);
-  // const [newItem, setNewItem] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   const [split, setSplit] = useState<number>(1);
   const [activeChannel, setActiveChannel] = useState<number>();
@@ -86,15 +85,6 @@ const DistributeToken: FC = () => {
 
   const { data: tokenSymbols, isLoading: isTokenSymbolLoading } =
     useERC20Function(TESTNET_TOKEN_LIST, "symbol", [], signer);
-
-  const { data: tokenNames, isLoading: isTokenNameLoading } = useERC20Function(
-    TESTNET_TOKEN_LIST,
-    "name",
-    [],
-    signer
-  );
-
-  console.log(tokenSymbols, tokenBalances);
 
   const changeSplitValue = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -128,7 +118,10 @@ const DistributeToken: FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        Distribute <span>Tokens as Vouchers</span>
+        <div>Distribute </div>
+        <div>
+          <span>Tokens as Vouchers</span>
+        </div>
       </div>
       {step === 1 ? (
         <>
@@ -178,26 +171,37 @@ const DistributeToken: FC = () => {
                 <div
                   key={index}
                   onClick={() => setSelectedToken(tokenAddress)}
-                  className={styles.singleAsset}
+                  className={classNames(
+                    styles.singleAsset,
+                    tokenAddress === selectedToken
+                      ? styles.selected
+                      : styles.hide
+                  )}
                 >
-                  <div>
-                    {tokenSymbols && !isTokenSymbolLoading
+                  <div className={styles.logo}>
+                    <img src={ASSETS_ICONS[tokenAddress] ?? customAssetIcon} />
+                  </div>
+                  <div className={styles.symbol}>
+                    {!isTokenSymbolLoading && tokenSymbols
                       ? tokenSymbols[tokenAddress]
                       : "Loading symbol..."}
                   </div>
-                  <div>
-                    {tokenBalances && !isTokenBalanceLoading
-                      ? ethers.utils.formatEther(tokenBalances[tokenAddress])
-                      : "Loading price..."}
-                  </div>
-                  {/* <div>
-                    {tokenNames && !isTokenNameLoading
-                      ? tokenNames[tokenAddress]
-                      : "Token name..."}
-                  </div> */}
                 </div>
               );
             })}
+          </div>
+          <div className={styles.balance}>
+            <div className={styles.label}>Your balance:{""}</div>
+            {tokenBalances && !isTokenBalanceLoading ? (
+              <div className={styles.value}>
+                {ethers.utils.formatEther(tokenBalances[selectedToken])}
+              </div>
+            ) : (
+              "Loading your'e balance..."
+            )}{" "}
+            {!isTokenSymbolLoading && tokenSymbols
+              ? tokenSymbols[selectedToken]
+              : ""}
           </div>
           <div className={styles.inputs}>
             <div className={styles.amount}>
@@ -205,7 +209,7 @@ const DistributeToken: FC = () => {
               <SymbolInput
                 value={amount}
                 symbol={
-                  tokenSymbols && !isTokenSymbolLoading
+                  !isTokenSymbolLoading && tokenSymbols
                     ? tokenSymbols[selectedToken]
                     : ""
                 }
