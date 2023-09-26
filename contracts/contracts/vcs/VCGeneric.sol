@@ -24,15 +24,6 @@ library VCGeneric {
         "VerifiableCredential(string[] context,string id,string[] type_,string issuer,CredentialSubject credentialSubject)CredentialSubject(string id)"
     );
 
-    function hashCredentialSubject(CredentialSubject memory cs) private pure returns (bytes32) {
-        return keccak256(
-            abi.encode(
-                CREDENTIAL_SUBJECT_TYPEHASH,
-                keccak256(abi.encodePacked(cs.id))
-            )
-        );
-    }
-
     function hash(VerifiableCredential memory vc) internal pure returns (bytes32) {
         return keccak256(
             abi.encode(
@@ -41,7 +32,16 @@ library VCGeneric {
                 keccak256(abi.encodePacked(vc.id)),
                 EIP712Utils.hashStringArray(vc.type_),
                 keccak256(abi.encodePacked(vc.issuer)),
-                hashCredentialSubject(vc.credentialSubject)
+                _hashCredentialSubject(vc.credentialSubject)
+            )
+        );
+    }
+
+    function _hashCredentialSubject(CredentialSubject memory cs) private pure returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                CREDENTIAL_SUBJECT_TYPEHASH,
+                keccak256(abi.encodePacked(cs.id))
             )
         );
     }
