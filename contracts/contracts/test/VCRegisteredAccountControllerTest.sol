@@ -6,7 +6,7 @@ import { VCRegisteredAccountController as VC } from "../vcs/VCRegisteredAccountC
 contract VCRegisteredAccountControllerTest {
     function testHash(
         VC.VerifiableCredential calldata vc
-    ) pure public returns(bytes32) {
+    ) external pure returns(bytes32) {
         return VC.hash(vc);
     }
 }

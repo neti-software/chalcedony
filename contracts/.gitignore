@@ -6,6 +6,7 @@
 !.yarn/versions
 
 node_modules/
+.env
 
 # hardhat artifacts
 artifacts

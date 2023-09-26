@@ -24,7 +24,9 @@ const zkSyncTestnet =
 const config: HardhatUserConfig = {
   zksolc: {
     version: "latest", // Uses latest available in https://github.com/matter-labs/zksolc-bin/
-    settings: {},
+    settings: {
+      isSystem: true,
+    },
   },
   // defaults to zkSync network
   defaultNetwork: "zkSyncTestnet",

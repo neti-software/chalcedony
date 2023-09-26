@@ -4,13 +4,27 @@ import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import { Paymaster, TestToken } from '../typechain-types';
 import { VC, GenericCredentialSubject } from 'chalcedony-vcs';
-import { BigNumber, TypedDataDomain, ethers } from 'ethers';
+import { BigNumber, BytesLike, TypedDataDomain, ethers } from 'ethers';
 import { PaymasterParams } from 'zksync-web3/build/src/types';
 
 const RICH_WALLET_PK =
   '0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110';
 const RICH_WALLET_PK_2 =
   '0xac1e735be8536c6534bb4f17f06f6afc73b2b5ba84ac2cfb12f7461b20c0bbe3';
+
+async function paymasterInnerInput(
+  encodings: ethers.utils.Interface,
+  vc: VC<GenericCredentialSubject>,
+  signer: Wallet,
+  domainSeparator: TypedDataDomain
+): Promise<BytesLike> {
+  const withSelector = encodings.encodeFunctionData("paymasterInnerInput", [
+        vc,
+        await vc.sign(signer, domainSeparator),
+      ])
+  // strip selector
+  return withSelector.replace(encodings.getSighash("paymasterInnerInput"), "0x");
+}
 
 describe('Paymaster', function () {
   let paymaster: Paymaster;
@@ -20,6 +34,7 @@ describe('Paymaster', function () {
   let token: TestToken;
   let domainSeparator: TypedDataDomain;
   let paymasterParams: PaymasterParams;
+  let IEncodings: ethers.utils.Interface;
 
   beforeEach(async function () {
     const provider = Provider.getDefaultProvider();
@@ -28,6 +43,9 @@ describe('Paymaster', function () {
     signer2 = new Wallet(RICH_WALLET_PK_2, provider);
     const deployer = new Deployer(hre, signer);
 
+    IEncodings = new ethers.utils.Interface(
+      (await deployer.loadArtifact('IEncodings')).abi
+    );
     paymaster = await deployer.deploy(await deployer.loadArtifact('Paymaster'), []) as Paymaster;
     token = await deployer.deploy(await deployer.loadArtifact('TestToken'), []) as TestToken;
 
@@ -49,7 +67,7 @@ describe('Paymaster', function () {
 
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
   });
 
@@ -69,7 +87,7 @@ describe('Paymaster', function () {
       type: "ApprovalBased",
       minimalAllowance: BigNumber.from(1),
       token: token.address,
-      innerInput: await vc.singAndEncode(signer, domainSeparator),
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     const tx = token.mint(signer.address, 10, {
       gasLimit: 2000000,
@@ -86,7 +104,7 @@ describe('Paymaster', function () {
     vc.credentialSubject.id = vc.issuer;
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer2, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator), 
     });
     
     const tx = token.connect(signer2).mint(signer.address, 10, {
@@ -103,7 +121,7 @@ describe('Paymaster', function () {
     vc.credentialSubject.id = "0x0000000000000000000000000000000000000000";
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     
     const tx = token.mint(signer.address, 10, {
@@ -126,7 +144,7 @@ describe('Paymaster', function () {
     vc.issuer = signer2.address;
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     
     const tx = token.mint(signer.address, 10, {
@@ -143,7 +161,7 @@ describe('Paymaster', function () {
     vc.type_ = ["VerifiableCredential"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     
     let tx = token.mint(signer.address, 10, {
@@ -158,7 +176,7 @@ describe('Paymaster', function () {
     vc.type_ = ["VerifiableCredential", "NotTransactionPaid"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     
     tx = token.mint(signer.address, 10, {
@@ -173,7 +191,7 @@ describe('Paymaster', function () {
     vc.type_ = ["VerifiableCredential", "TransactionPaid", "TooMuch"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
-      innerInput: await vc.singAndEncode(signer, domainSeparator)
+      innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
     });
     
     tx = token.mint(signer.address, 10, {

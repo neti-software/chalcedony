@@ -1,5 +1,5 @@
-import { BigNumberish, TypedDataDomain, Wallet } from 'ethers';
-import { BytesLike, _TypedDataEncoder, defaultAbiCoder } from 'ethers/lib/utils';
+import { TypedDataDomain, Wallet } from 'ethers';
+import { BytesLike, _TypedDataEncoder } from 'ethers/lib/utils';
 
 export interface EIP712Type {
   name: string;
@@ -37,7 +37,7 @@ export class VC<CredentialSubject extends BaseCredentialSubject> implements EIP7
   }
 
   hash() {
-    return _TypedDataEncoder.hashStruct("VerifiableCredential", this.types(), this);
+      return _TypedDataEncoder.hashStruct("VerifiableCredential", this.types(), this);
   }
 
   types() {
@@ -53,33 +53,15 @@ export class VC<CredentialSubject extends BaseCredentialSubject> implements EIP7
     }
   }
 
-  async singAndEncode(
+  async sign(
     signer: Wallet,
     domainSeparator: TypedDataDomain,
   ): Promise<BytesLike> {
-    const proofValue = await signer._signTypedData({
+    return await signer._signTypedData({
       name: domainSeparator.name,
       version: domainSeparator.version,
       chainId: domainSeparator.chainId,
       verifyingContract: domainSeparator.verifyingContract,
     }, this.types(), this)
-    return defaultAbiCoder.encode(
-      [
-        "tuple(string[],string,string[],string,tuple(string))",
-        "bytes",
-      ],
-      [
-        [
-          this.context,
-          this.id,
-          this.type_,
-          this.issuer,
-          [
-            this.credentialSubject.id
-          ]
-        ],
-        proofValue
-      ]);
   }
-
 }

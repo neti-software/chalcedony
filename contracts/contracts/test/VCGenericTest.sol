@@ -6,7 +6,7 @@ import { VCGeneric } from "../vcs/VCGeneric.sol";
 contract VCGenericTest {
     function testHash(
         VCGeneric.VerifiableCredential calldata vc
-    ) pure public returns(bytes32) {
+    ) external pure returns(bytes32) {
         return VCGeneric.hash(vc);
     }
 }
