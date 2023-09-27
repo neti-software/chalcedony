@@ -1,11 +1,22 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, BigNumberish, utils } from "ethers";
 import { Signer } from "zksync-web3";
 import { RPC_ENDPOINT_URL } from "./config";
 import { CONTRACTS, getReadContractByAddress } from "./contract";
-
 type Balances = {
   [key: string]: BigNumber | string;
 };
+
+export function toBN(num: string | number | BigNumberish) {
+  return BigNumber.from(num);
+}
+
+export function fromWei(num: string) {
+  return utils.formatEther(num);
+}
+
+export function toWei(num: string) {
+  return utils.parseEther(num).toString();
+}
 
 export const getAllTrustedTokenBalances = async (
   walletAddress: string

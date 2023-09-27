@@ -1,7 +1,8 @@
 import { useConnectWallet } from "@web3-onboard/react";
 import { useWeb3Onboard } from "@web3-onboard/react/dist/context";
 import classNames from "classnames";
-import { ChangeEvent, FC, useContext, useState } from "react";
+import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
+import { MainContext } from "../../context";
 import { useERC20Function } from "../../helpers/queries";
 import { ASSETS_ICONS, TESTNET_TOKEN_LIST } from "../../helpers/tokensList";
 import one from "../../images/DistributeToken/1.png";
@@ -12,14 +13,13 @@ import four from "../../images/DistributeToken/4.png";
 import at from "../../images/DistributeToken/@.png";
 import token from "../../images/DistributeToken/AVAX.png";
 import connectWalletIcon from "../../images/DistributeToken/ConnectWallet.png";
+import customAssetIcon from "../../images/DistributeToken/customIcon.png";
 import emailIcon from "../../images/DistributeToken/email.png";
 import qrIcon from "../../images/DistributeToken/qrcode.png";
 import icon from "../../images/tokeIcon.svg";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
-import { MainContext } from "../../context";
-import { ethers } from "ethers";
-import customAssetIcon from "../../images/DistributeToken/customIcon.png";
+import { fromWei, toBN, toWei } from "../../helpers/utils";
 
 const steps: Array<{
   step: string;
@@ -71,6 +71,8 @@ const DistributeToken: FC = () => {
     { generated: false },
   ]);
 
+  const [tokensLeft, setTokensLeft] = useState("0");
+
   const [{ wallet }] = useConnectWallet();
   const onboard = useWeb3Onboard();
   const { signer } = useContext(MainContext);
@@ -86,10 +88,7 @@ const DistributeToken: FC = () => {
   const { data: tokenSymbols, isLoading: isTokenSymbolLoading } =
     useERC20Function(TESTNET_TOKEN_LIST, "symbol", [], signer);
 
-  const changeSplitValue = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setSplit(value);
-
+  const setDistributionInputs = (value: number) => {
     const newEmailInputs: Array<EmailInput> = [];
     const newQrcodeInputs: Array<QrCodeInput> = [];
 
@@ -100,6 +99,22 @@ const DistributeToken: FC = () => {
 
     setEmailInputs(newEmailInputs);
     setQrcodeInputs(newQrcodeInputs);
+  };
+
+  const changeSplitValue = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setSplit(value);
+    setDistributionInputs(value);
+  };
+
+  const calcTokensLeft = () => {
+    const tokensAvail = !tokenBalances[selectedToken]._isBigNumber
+      ? toBN(tokenBalances[selectedToken])
+      : tokenBalances[selectedToken];
+    const amountBN = toBN(toWei(amount.toString()));
+    const tokensLeft = tokensAvail.sub(amountBN);
+
+    setTokensLeft(fromWei(tokensLeft));
   };
 
   const changeAmountValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +129,19 @@ const DistributeToken: FC = () => {
     newItems[index] = { generated: true };
     setQrcodeInputs(newItems);
   };
+
+  const onChangeActiveToken = (tokenAddress: string) => {
+    setSelectedToken(tokenAddress);
+    setAmount(0);
+    setSplit(1);
+    setDistributionInputs(1);
+  };
+
+  useEffect(() => {
+    if (!tokenBalances) return;
+
+    calcTokensLeft();
+  }, [isTokenBalanceLoading, amount, selectedToken]);
 
   return (
     <div className={styles.container}>
@@ -170,7 +198,7 @@ const DistributeToken: FC = () => {
               return (
                 <div
                   key={index}
-                  onClick={() => setSelectedToken(tokenAddress)}
+                  onClick={() => onChangeActiveToken(tokenAddress)}
                   className={classNames(
                     styles.singleAsset,
                     tokenAddress === selectedToken
@@ -193,9 +221,7 @@ const DistributeToken: FC = () => {
           <div className={styles.balance}>
             <div className={styles.label}>Your balance:{""}</div>
             {tokenBalances && !isTokenBalanceLoading ? (
-              <div className={styles.value}>
-                {ethers.utils.formatEther(tokenBalances[selectedToken])}
-              </div>
+              <div className={styles.value}>{tokensLeft}</div>
             ) : (
               "Loading your'e balance..."
             )}{" "}
