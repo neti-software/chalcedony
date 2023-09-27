@@ -70,7 +70,7 @@ export const getERC20ContractFunctionResult = async (
   contractAddresses: Array<string>,
   functionName: string,
   signer?: Signer,
-  params: Array<string> = []
+  params: Array<string | undefined> = []
 ): Promise<any> => {
   const promisses = contractAddresses.map((contractAddress: string) => {
     const tokenContract = getReadContractByAddress(
@@ -82,7 +82,14 @@ export const getERC20ContractFunctionResult = async (
     return tokenContract[functionName](...params);
   });
 
-  const contractResults = await Promise.all(promisses);
+  let contractResults = [];
+
+  try {
+    contractResults = await Promise.all(promisses);
+  } catch (error) {
+    console.log(`Error while getting ${functionName} data`, error);
+    return [];
+  }
 
   let result: any = {};
 

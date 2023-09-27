@@ -31,7 +31,7 @@ export const useGetCustomTokenBalance = (
 export const useERC20Function = (
   contractAddresses: Array<string>,
   functionName: string,
-  params?: Array<string>,
+  params: Array<string | undefined> = [],
   signer?: Signer
 ) =>
   useQuery(

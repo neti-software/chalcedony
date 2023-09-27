@@ -1,10 +1,9 @@
 import { useConnectWallet } from "@web3-onboard/react";
-import { useWeb3Onboard } from "@web3-onboard/react/dist/context";
 import classNames from "classnames";
-import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
-import { MainContext } from "../../context";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useERC20Function } from "../../helpers/queries";
 import { ASSETS_ICONS, TESTNET_TOKEN_LIST } from "../../helpers/tokensList";
+import { fromWei, toBN, toWei } from "../../helpers/utils";
 import one from "../../images/DistributeToken/1.png";
 import amount from "../../images/DistributeToken/2.00ETH.png";
 import two from "../../images/DistributeToken/2.png";
@@ -16,10 +15,10 @@ import connectWalletIcon from "../../images/DistributeToken/ConnectWallet.png";
 import customAssetIcon from "../../images/DistributeToken/customIcon.png";
 import emailIcon from "../../images/DistributeToken/email.png";
 import qrIcon from "../../images/DistributeToken/qrcode.png";
-import icon from "../../images/tokeIcon.svg";
+import Box from "../Box";
+import CustomTokenLogo from "../CustomTokenLogo";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
-import { fromWei, toBN, toWei } from "../../helpers/utils";
 
 const steps: Array<{
   step: string;
@@ -74,19 +73,14 @@ const DistributeToken: FC = () => {
   const [tokensLeft, setTokensLeft] = useState("0");
 
   const [{ wallet }] = useConnectWallet();
-  const onboard = useWeb3Onboard();
-  const { signer } = useContext(MainContext);
 
   const { data: tokenBalances, isLoading: isTokenBalanceLoading } =
-    useERC20Function(
-      TESTNET_TOKEN_LIST,
-      "balanceOf",
-      [onboard.state.get().wallets?.[0]?.accounts?.[0].address],
-      signer
-    );
+    useERC20Function(TESTNET_TOKEN_LIST, "balanceOf", [
+      wallet?.accounts?.[0].address,
+    ]);
 
   const { data: tokenSymbols, isLoading: isTokenSymbolLoading } =
-    useERC20Function(TESTNET_TOKEN_LIST, "symbol", [], signer);
+    useERC20Function(TESTNET_TOKEN_LIST, "symbol");
 
   const setDistributionInputs = (value: number) => {
     const newEmailInputs: Array<EmailInput> = [];
@@ -108,6 +102,11 @@ const DistributeToken: FC = () => {
   };
 
   const calcTokensLeft = () => {
+    if (!tokenBalances || !tokenBalances[selectedToken] || !wallet) {
+      setTokensLeft("0");
+      return;
+    }
+
     const tokensAvail = !tokenBalances[selectedToken]._isBigNumber
       ? toBN(tokenBalances[selectedToken])
       : tokenBalances[selectedToken];
@@ -138,13 +137,16 @@ const DistributeToken: FC = () => {
   };
 
   useEffect(() => {
-    if (!tokenBalances) return;
-
     calcTokensLeft();
-  }, [isTokenBalanceLoading, amount, selectedToken]);
+  }, [isTokenBalanceLoading, amount, selectedToken, wallet]);
+
+  // useEffect(() => {
+  //   debugger;
+  //   refetchTokenBalance();
+  // }, [wallet]);
 
   return (
-    <div className={styles.container}>
+    <Box>
       <div className={styles.title}>
         <div>Distribute </div>
         <div>
@@ -165,9 +167,7 @@ const DistributeToken: FC = () => {
               <br />
               <span>Simplify token distribution with us today.</span>
             </div>
-            <div className={styles.logo}>
-              <img src={icon} alt="token-icon" />
-            </div>
+            <CustomTokenLogo />
           </div>
           <div className={styles.steps}>
             {steps.map(({ step, text, image }, index) => {
@@ -339,7 +339,7 @@ const DistributeToken: FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 
