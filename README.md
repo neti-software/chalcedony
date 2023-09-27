@@ -10,8 +10,10 @@
     * `cd chalcedony/chalcedony-vcs && yarn && yarn tsc`
 3. Start [zkSync dev nodes](https://github.com/matter-labs/local-setup/blob/main/README.md)
     * `cd chalcedony/local-setup && docker compose up -d`
-4. Setup [our app](./app/README.md)
+4. Setup [our frontend app](./app/README.md)
     * `cd chalcedony/app && yarn && yarn run dev`
+4. Setup [our backend app](./witness-backend/README.md)
+    * `cd chalcedony/witness-backend && yarn && yarn run dev`
 5. Setup [our contracts](./contracts/README.md)
     * `cd chalcedony/contracts && yarn && yarn hardhat compile`
 
