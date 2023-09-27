@@ -58,7 +58,7 @@ contract Paymaster is IPaymaster, EIP712 {
         (VCGeneric.VerifiableCredential memory vc, bytes memory proofValue) =
             abi.decode(paymasterInnerInput, (VCGeneric.VerifiableCredential, bytes));
 
-        address sponsor = DIDUtils.parseAddress(vc.issuer);
+        address sponsor = DIDUtils.parseAddress(vc.issuer.id);
         address subject = DIDUtils.parseAddress(vc.credentialSubject.id);
 
         /* Calculate ifd payment */
@@ -75,9 +75,9 @@ contract Paymaster is IPaymaster, EIP712 {
             revert Unauthorized();
         if(signer != sponsor)
             revert InvalidSignature();
-        if(vc.type_.length != 2)
+        if(vc._type.length != 2)
             revert InvalidVCTypeLength();
-        if(keccak256(bytes(vc.type_[1])) != keccak256(bytes("TransactionPaid")))
+        if(keccak256(bytes(vc._type[1])) != keccak256(bytes("TransactionPaid")))
             revert InvalidVCType();
         if(burnedVCs[vc.id])
             revert BurnedVC();

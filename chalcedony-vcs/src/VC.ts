@@ -15,39 +15,60 @@ export interface BaseCredentialSubject extends EIP712Struct {
   id: string;
 }
 
-export class VC<CredentialSubject extends BaseCredentialSubject> implements EIP712Struct {
-  context: string[];
+export class Issuer implements EIP712Struct {
   id: string;
-  type_: string[];
-  issuer: string;
+
+  constructor(id: string) {
+    this.id = id;
+  }
+
+  hash(): string {
+    return _TypedDataEncoder.hashStruct("Issuer", this.types(), this);
+  }
+
+  types(): Record<string, EIP712Type[]> {
+    return {
+      Issuer: [
+        { "name": "id", "type": "string" },
+      ]
+    }
+  }
+}
+
+export class VC<CredentialSubject extends BaseCredentialSubject> implements EIP712Struct {
+  _context: string[];
+  id: string;
+  _type: string[];
+  issuer: Issuer;
   credentialSubject: CredentialSubject;
 
   constructor(
-    context: string[],
+    _context: string[],
     id: string,
-    type_: string[],
-    issuer: string,
+    _type: string[],
+    issuer: Issuer,
     credentialSubject: CredentialSubject
   ) {
-    this.context = context;
+    this._context = _context;
     this.id = id;
-    this.type_ = type_;
+    this._type = _type;
     this.issuer = issuer;
     this.credentialSubject = credentialSubject;
   }
 
   hash() {
-      return _TypedDataEncoder.hashStruct("VerifiableCredential", this.types(), this);
+    return _TypedDataEncoder.hashStruct("VerifiableCredential", this.types(), this);
   }
 
   types() {
     return {
       ...this.credentialSubject.types(),
+      ...this.issuer.types(),
       VerifiableCredential: [
-        { name: 'context', type: 'string[]' },
+        { name: '_context', type: 'string[]' },
         { name: 'id', type: 'string' },
-        { name: 'type_', type: 'string[]' },
-        { name: 'issuer', type: 'string' },
+        { name: '_type', type: 'string[]' },
+        { name: 'issuer', type: 'Issuer' },
         { name: 'credentialSubject', type: 'CredentialSubject' },
       ]
     }

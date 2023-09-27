@@ -3,7 +3,7 @@ import { Wallet, Provider, utils, EIP712Signer, types } from 'zksync-web3';
 import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import { Account, DummyPaymaster, TestToken } from '../typechain-types';
-import { VC, GenericCredentialSubject, RegisteredAccountControllerCredentialSubject, RegistrationClaim } from 'chalcedony-vcs';
+import { Issuer, VC, GenericCredentialSubject, RegisteredAccountControllerCredentialSubject, RegistrationClaim } from 'chalcedony-vcs';
 import { TypedDataDomain, ethers } from 'ethers';
 import { PaymasterParams } from 'zksync-web3/build/src/types';
 
@@ -55,7 +55,7 @@ describe('Smart Account', function () {
       ["https://www.w3.org/ns/credentials/v2"],
       "did:ethr:0x0000000000000000000000000000000000000000",
       ["VerifiableCredential", "InBlancoAccountController"],
-      smartAccountDid,
+      new Issuer(smartAccountDid),
       new GenericCredentialSubject(
         smartAccountDid,
       ),
@@ -64,7 +64,7 @@ describe('Smart Account', function () {
       ["https://www.w3.org/ns/credentials/v2"],
       "did:ethr:0x0000000000000000000000000000000000000001",
       ["VerifiableCredential", "RegisteredAccountController"],
-      witnessDid,
+      new Issuer(witnessDid),
       new RegisteredAccountControllerCredentialSubject(
         `did:ethr:${signer.address}`,
         new RegistrationClaim(inBlancoVC.id),
@@ -84,7 +84,7 @@ describe('Smart Account', function () {
 
   it("Should execute legit transactions", async function () {
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -118,7 +118,7 @@ describe('Smart Account', function () {
 
   it("Should reject invalid signature", async function () {
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -143,7 +143,7 @@ describe('Smart Account', function () {
 
   it("Should reject invalid eoa signature", async function () {
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -175,9 +175,9 @@ describe('Smart Account', function () {
   });
 
   it("Should reject mismatched InBlanco issuer", async function () {
-    inBlancoVC.issuer = `did:ethr:${witness.address}`;
+    inBlancoVC.issuer.id = `did:ethr:${witness.address}`;
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -210,7 +210,7 @@ describe('Smart Account', function () {
 
   it("Should reject invalid InBlanco signature", async function () {
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -242,9 +242,9 @@ describe('Smart Account', function () {
   });
 
   it("Should reject invalid RegisteredAccount issuer", async function () {
-    registeredAccountVC.issuer = smartAccountDid;
+    registeredAccountVC.issuer.id = smartAccountDid;
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -278,7 +278,7 @@ describe('Smart Account', function () {
   it("Should reject invalid subject", async function () {
     registeredAccountVC.credentialSubject.id = smartAccountDid;
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -311,7 +311,7 @@ describe('Smart Account', function () {
 
   it("Should reject invalid tx signature", async function () {
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {
@@ -345,7 +345,7 @@ describe('Smart Account', function () {
   it("Should reject mismatched registeredWith", async function () {
     registeredAccountVC.credentialSubject.registeredWith.id = "did:ethr:0x000000000000000000000";
     const mintTx = await token.populateTransaction.mint(signer.address, ethers.utils.parseEther("1"));
-    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(60000);
+    const gasLimit = (await signer.provider.estimateGas(mintTx)).add(70000);
     const gasPrice = await signer.provider.getGasPrice();
 
     const tx = {

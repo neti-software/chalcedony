@@ -3,7 +3,7 @@ import { Wallet, Provider, utils } from 'zksync-web3';
 import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import { Paymaster, TestToken } from '../typechain-types';
-import { VC, GenericCredentialSubject } from 'chalcedony-vcs';
+import { VC, GenericCredentialSubject, Issuer } from 'chalcedony-vcs';
 import { BigNumber, BytesLike, TypedDataDomain, ethers } from 'ethers';
 import { PaymasterParams } from 'zksync-web3/build/src/types';
 
@@ -54,7 +54,7 @@ describe('Paymaster', function () {
       ["https://www.w3.org/ns/credentials/v2"],
       "did:ethr:0x0000000000000000000000000000000000000000",
       ["VerifiableCredential", "TransactionPaid"],
-      `did:ethr:${signer.address}`, // issuer, a.k.a. sponsor
+      new Issuer(`did:ethr:${signer.address}`), // issuer, a.k.a. sponsor
       new GenericCredentialSubject(
         `did:ethr:${signer.address}` // subject, a.k.a. spender
       ),
@@ -100,8 +100,8 @@ describe('Paymaster', function () {
   });
 
   it("Should refuse underfunded", async function () {
-    vc.issuer = `did:ethr:${signer2.address}`;
-    vc.credentialSubject.id = vc.issuer;
+    vc.issuer.id = `did:ethr:${signer2.address}`;
+    vc.credentialSubject.id = vc.issuer.id;
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
       innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator), 
@@ -141,7 +141,7 @@ describe('Paymaster', function () {
     });
     await fundTx.wait();
 
-    vc.issuer = signer2.address;
+    vc.issuer.id = signer2.address;
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
       innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
@@ -158,7 +158,7 @@ describe('Paymaster', function () {
   });
 
   it("Should refuse incorrect VC type", async function () {
-    vc.type_ = ["VerifiableCredential"];
+    vc._type = ["VerifiableCredential"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
       innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
@@ -173,7 +173,7 @@ describe('Paymaster', function () {
     })
     await expect(tx).to.be.reverted;
 
-    vc.type_ = ["VerifiableCredential", "NotTransactionPaid"];
+    vc._type = ["VerifiableCredential", "NotTransactionPaid"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
       innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
@@ -188,7 +188,7 @@ describe('Paymaster', function () {
     })
     await expect(tx).to.be.reverted;
 
-    vc.type_ = ["VerifiableCredential", "TransactionPaid", "TooMuch"];
+    vc._type = ["VerifiableCredential", "TransactionPaid", "TooMuch"];
     paymasterParams = utils.getPaymasterParams(paymaster.address, {
       type: "General",
       innerInput: await paymasterInnerInput(IEncodings, vc, signer, domainSeparator)
