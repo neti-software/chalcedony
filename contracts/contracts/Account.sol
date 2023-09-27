@@ -90,13 +90,13 @@ contract Account is IAccount, EIP712  {
 
         // verify inBlanco is OK
         address inBlancoSigner = ECDSA.recover(_hashTypedDataV4(inBlancoVC.hash()), inBlancoProofValue);
-        if(inBlancoVC.type_.length != 2)
+        if(inBlancoVC._type.length != 2)
             revert InvalidInBlancoTypeLength();
-        if(keccak256(bytes(inBlancoVC.type_[1])) != keccak256(bytes("InBlancoAccountController")))
+        if(keccak256(bytes(inBlancoVC._type[1])) != keccak256(bytes("InBlancoAccountController")))
             revert InvalidInBlancoType();
-        if(keccak256(bytes(inBlancoVC.issuer)) != keccak256(bytes(inBlancoVC.credentialSubject.id)))
+        if(keccak256(bytes(inBlancoVC.issuer.id)) != keccak256(bytes(inBlancoVC.credentialSubject.id)))
             revert MismatchedInBlancoIssuerSubject();
-        if(keccak256(bytes(inBlancoVC.issuer)) != keccak256(bytes(ownerDid)))
+        if(keccak256(bytes(inBlancoVC.issuer.id)) != keccak256(bytes(ownerDid)))
             revert UnauthorizedInBlancoIssuer();
         if(inBlancoSigner != DIDUtils.parseAddress(ownerDid))
             revert InvalidInBlancoProof();
@@ -106,16 +106,16 @@ contract Account is IAccount, EIP712  {
             _hashTypedDataV4(registeredAccountVC.hash()),
             registeredAccountProofValue
         );
-        if(registeredAccountVC.type_.length != 2)
+        if(registeredAccountVC._type.length != 2)
             revert InvalidRegisteredAccountTypeLength();
-        if(keccak256(bytes(registeredAccountVC.type_[1])) != keccak256(bytes("RegisteredAccountController")))
+        if(keccak256(bytes(registeredAccountVC._type[1])) != keccak256(bytes("RegisteredAccountController")))
             revert InvalidRegisteredAccountType();
-        if(keccak256(bytes(registeredAccountVC.issuer)) != keccak256(bytes(witnessDid)))
+        if(keccak256(bytes(registeredAccountVC.issuer.id)) != keccak256(bytes(witnessDid)))
             revert UnauthorizedRegisteredAccountIssuer();
         if(keccak256(bytes(registeredAccountVC.credentialSubject.registeredWith.id))
             != keccak256(bytes(inBlancoVC.id)))
             revert MismatchedInBlancoRegisteredAccount();
-        if(registeredAccountSigner != DIDUtils.parseAddress(registeredAccountVC.issuer))
+        if(registeredAccountSigner != DIDUtils.parseAddress(registeredAccountVC.issuer.id))
             revert InvalidRegisteredAccountProof();
 
         SystemContractsCaller.systemCallWithPropagatedRevert(

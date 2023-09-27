@@ -11,7 +11,7 @@ import * as AccountArtifact from "../artifacts-zk/contracts/Account.sol/Account.
 import * as PaymasterArtifact from "../artifacts-zk/contracts/Paymaster.sol/Paymaster.json";
 import * as TestTokenArtifact from "../artifacts-zk/contracts/test/TestToken.sol/TestToken.json";
 import * as IEncodingsArtifact from "../artifacts-zk/contracts/IEncodings.sol/IEncodings.json";
-import { GenericCredentialSubject, RegisteredAccountControllerCredentialSubject, RegistrationClaim, VC } from "chalcedony-vcs";
+import { GenericCredentialSubject, Issuer, RegisteredAccountControllerCredentialSubject, RegistrationClaim, VC } from "chalcedony-vcs";
 import { Account, Paymaster, TestToken } from "../typechain-types";
 
 const ALICE_PRIVATE_KEY = process.env.ALICE_PRIVATE_KEY || "";
@@ -76,7 +76,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
     ["https://www.w3.org/ns/credentials/v2"],
     `did:ethr:${inBlancoVCAddress}`,
     ["VerifiableCredential", "InBlancoAccountController"],
-    `did:ethr:${accountWallet.address}`,
+    new Issuer(`did:ethr:${accountWallet.address}`),
     new GenericCredentialSubject(
       `did:ethr:${accountWallet.address}`,
     ),
@@ -85,7 +85,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
     ["https://www.w3.org/ns/credentials/v2"],
     `did:ethr:${registeredAccountVCAddress}`,
     ["VerifiableCredential", "RegisteredAccountController"],
-    `did:ethr:${witness.address}`,
+    new Issuer(`did:ethr:${witness.address}`),
     new RegisteredAccountControllerCredentialSubject(
       `did:ethr:${bob.address}`,
       new RegistrationClaim(inBlancoVC.id),
@@ -95,7 +95,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
     ["https://www.w3.org/ns/credentials/v2"],
     `did:ethr:${transactionPaidVCAddress}`,
     ["VerifiableCredential", "TransactionPaid"],
-    `did:ethr:${alice.address}`, // issuer, a.k.a. sponsor
+    new Issuer(`did:ethr:${alice.address}`), // issuer, a.k.a. sponsor
     new GenericCredentialSubject(
       `did:ethr:${accountContract.address}` // subject, a.k.a. spender
     ),
@@ -115,7 +115,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
 
   // Prepare tx
   const mintTx = await token.populateTransaction.mint(bob.address, ethers.utils.parseEther("1"));
-  const gasLimit = (await bob.provider.estimateGas(mintTx)).add(60000);
+  const gasLimit = (await bob.provider.estimateGas(mintTx)).add(70000);
   const gasPrice = await bob.provider.getGasPrice();
   const tx = {
     ...mintTx,

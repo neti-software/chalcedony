@@ -8,19 +8,28 @@ library VCRegisteredAccountController {
         string id;
     }
 
+    struct Issuer {
+        string id;
+    }
+
     struct CredentialSubject {
         string id;
         RegistrationClaim registeredWith;
     }
 
     struct VerifiableCredential {
-        string[] context;
+        // solhint-disable-next-line private-vars-leading-underscore
+        string[] _context;
         string id;
-        string[] type_;
-        string issuer;
+        // solhint-disable-next-line private-vars-leading-underscore
+        string[] _type;
+        Issuer issuer;
         CredentialSubject credentialSubject;
     }
 
+    bytes32 constant public ISSUER_TYPEHASH = keccak256(
+        "Issuer(string id)"
+    );
     bytes32 constant public REGISTRATION_CLAIM_TYPEHASH = keccak256(
         "RegistrationClaim(string id)"
     );
@@ -28,18 +37,27 @@ library VCRegisteredAccountController {
         "CredentialSubject(string id,RegistrationClaim registeredWith)RegistrationClaim(string id)"
     );
     bytes32 constant public VERIFIABLE_CREDENTIAL_TYPEHASH = keccak256(
-        "VerifiableCredential(string[] context,string id,string[] type_,string issuer,CredentialSubject credentialSubject)CredentialSubject(string id,RegistrationClaim registeredWith)RegistrationClaim(string id)"
+        "VerifiableCredential(string[] _context,string id,string[] _type,Issuer issuer,CredentialSubject credentialSubject)CredentialSubject(string id,RegistrationClaim registeredWith)Issuer(string id)RegistrationClaim(string id)"
     );
 
     function hash(VerifiableCredential memory vc) internal pure returns (bytes32) {
         return keccak256(
             abi.encode(
                 VERIFIABLE_CREDENTIAL_TYPEHASH,
-                EIP712Utils.hashStringArray(vc.context),
+                EIP712Utils.hashStringArray(vc._context),
                 keccak256(abi.encodePacked(vc.id)),
-                EIP712Utils.hashStringArray(vc.type_),
-                keccak256(abi.encodePacked(vc.issuer)),
+                EIP712Utils.hashStringArray(vc._type),
+                _hashIssuer(vc.issuer),
                 _hashCredentialSubject(vc.credentialSubject)
+            )
+        );
+    }
+
+    function _hashIssuer(Issuer memory issuer) private pure returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                ISSUER_TYPEHASH,
+                keccak256(abi.encodePacked(issuer.id))
             )
         );
     }

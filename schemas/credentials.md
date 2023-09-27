@@ -4,24 +4,26 @@ All VCs has following basic schema (TODO: write formal schema):
 
 ```json
 {
-    context: ["https://www.w3.org/ns/credentials/v2"],
-    id: "did:key:0xbaad",
-    type_: ["VerifiableCredential", "MyCred"],
-    issuer: "did:key:0xdeadbeaf",
+    _context: ["https://www.w3.org/ns/credentials/v2"],
+    id: "did:ethr:0xbaad",
+    _type: ["VerifiableCredential", "MyCred"],
+    issuer: {
+        id: "did:ethr:0xdeadbeaf"
+    },
     credentialSubject: {
-        id: "did:key:0xc00ffebabe",
+        id: "did:ethr:0xc00ffebabe"
     }
 }
 ```
 
 Where:
-* `context` is equivalent to standard [`@context`](https://www.w3.org/TR/vc-data-model/#contexts)
+* `_context` is equivalent to standard [`@_context`](https://www.w3.org/TR/vc-data-model/#_contexts)
 * [`id`](https://www.w3.org/TR/vc-data-model/#identifiers) is a DID of the VC itself
-* `type_` is equivalent to standard [`type`](https://www.w3.org/TR/vc-data-model/#types)
+* `_type` is equivalent to standard [`type`](https://www.w3.org/TR/vc-data-model/#types)
 * [`issuer`](https://www.w3.org/TR/vc-data-model/#issuer) is a DID of the VC issuer
 * [`credentialSubject`](https://www.w3.org/TR/vc-data-model/#credential-subject) describes the subject and contains:
   * `id` is a DID of the VC subject
-  * any number of specific claims (depends on `type_`)
+  * any number of specific claims (depends on `_type`)
 
 Although we present VCs as JSON in this document, they're actually EIP-712 TypedStructs.
 
@@ -33,12 +35,14 @@ This type contains claim that given subject can control issuer's Smart Account. 
 
 ```json
 {
-    context: ["https://www.w3.org/ns/credentials/v2"],
-    id: "did:key:0xbaad",
-    type_: ["VerifiableCredential", "InBlancoAccountController"],
-    issuer: "did:key:0xdeadbeaf",
+    _context: ["https://www.w3.org/ns/credentials/v2"],
+    id: "did:ethr:0xbaad",
+    _type: ["VerifiableCredential", "InBlancoAccountController"],
+    issuer: {
+        id: "did:ethr:0xdeadbeaf"
+    },
     credentialSubject: {
-        id: "did:key:0xdeadbeaf",
+        id: "did:ethr:0xdeadbeaf"
     }
 }
 ```
@@ -49,12 +53,14 @@ This type contains claim that given subject (a Smart Account) can pay for a sing
 
 ```json
 {
-    context: ["https://www.w3.org/ns/credentials/v2"],
-    id: "did:key:0xbaad",
-    type_: ["VerifiableCredential", "TransactionPaid"],
-    issuer: "did:key:0xc0febabe",
+    _context: ["https://www.w3.org/ns/credentials/v2"],
+    id: "did:ethr:0xbaad",
+    _type: ["VerifiableCredential", "TransactionPaid"],
+    issuer: {
+        id: "did:ethr:0xc0febabe"
+    },
     credentialSubject: {
-        id: "did:key:0xdeadbeaf",
+        id: "did:ethr:0xdeadbeaf"
     }
 }
 ```
@@ -65,14 +71,16 @@ This type contains claim that given subject (Bob's new wallet) registered as the
 
 ```json
 {
-    context: ["https://www.w3.org/ns/credentials/v2"],
-    id: "did:key:0xbaad",
-    type_: ["VerifiableCredential", "RegisteredAccountController"],
-    issuer: "did:key:0xbaadb10c",
+    _context: ["https://www.w3.org/ns/credentials/v2"],
+    id: "did:ethr:0xbaad",
+    _type: ["VerifiableCredential", "RegisteredAccountController"],
+    issuer: {
+        id: "did:ethr:0xbaadb10c"
+    },
     credentialSubject: {
-        id: "did:key:0x00ff00ff",
+        id: "did:ethr:0x00ff00ff",
         registeredWith: {
-            id: "did:key:0xbaad"
+            id: "did:ethr:0xbaad"
         }
     }
 }
@@ -93,7 +101,7 @@ Actors:
    * Subject - Smart Account DID
 4. Alice deposits ETH in Paymaster.
 5. Alice creates an `TransactionPaid` VC:
-   * Issuer - Alice `did:key:` DID
+   * Issuer - Alice `did:ethr:` DID
    * Subject - Smart Account DID
 6. Alice sends both VCs over to Bob
 7. Bob takes `InBlancoAccountController` VC and shows it + his new wallet address to the Backend
