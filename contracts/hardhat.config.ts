@@ -1,8 +1,11 @@
 import { HardhatUserConfig } from "hardhat/config";
 
+import '@typechain/hardhat'
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
 import "@matterlabs/hardhat-zksync-verify";
+import "@matterlabs/hardhat-zksync-chai-matchers";
+
 
 // dynamically changes endpoints for local tests
 const zkSyncTestnet =
@@ -21,7 +24,9 @@ const zkSyncTestnet =
 const config: HardhatUserConfig = {
   zksolc: {
     version: "latest", // Uses latest available in https://github.com/matter-labs/zksolc-bin/
-    settings: {},
+    settings: {
+      isSystem: true,
+    },
   },
   // defaults to zkSync network
   defaultNetwork: "zkSyncTestnet",
@@ -33,7 +38,10 @@ const config: HardhatUserConfig = {
     zkSyncTestnet,
   },
   solidity: {
-    version: "0.8.17",
+    version: "0.8.19",
+  },
+  typechain: {
+    target: 'ethers-v5',
   },
 };
 

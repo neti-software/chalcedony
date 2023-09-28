@@ -6,10 +6,12 @@
 !.yarn/versions
 
 node_modules/
+.env
 
 # hardhat artifacts
 artifacts
 cache
+typechain-types
 
 # zksync artifacts
 artifacts-zk
