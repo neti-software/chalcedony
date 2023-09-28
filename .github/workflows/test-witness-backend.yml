@@ -20,7 +20,7 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
       - name: Install dependencies
         working-directory: ./witness-backend/
-        run: corepack enable && yarn install --frozen-lockfile
+        run: corepack enable && yarn install --immutable
       
       - name: Install chalcedony-vcs deps
         working-directory: ./chalcedony-vcs
