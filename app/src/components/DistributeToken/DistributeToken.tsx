@@ -138,6 +138,8 @@ const DistributeToken: FC = () => {
 
   useEffect(() => {
     calcTokensLeft();
+  // FIXME calcTokensLeft should probably be defined inside the useEffect or with useMemo and added to deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTokenBalanceLoading, amount, selectedToken, wallet]);
 
   // useEffect(() => {
