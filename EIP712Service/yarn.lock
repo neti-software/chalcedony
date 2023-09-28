@@ -1434,6 +1434,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tsconfig/recommended@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@tsconfig/recommended@npm:1.0.3"
+  checksum: cf2bf93d419e28b98ac82d9587035daf7dc1e0ef9b8db873a7962967d8744df352ebd2986b046911889e989d4f2caec3bf5826a4c8a4b61572d03329fdc56b34
+  languageName: node
+  linkType: hard
+
 "@typechain/ethers-v5@npm:^10.1.0":
   version: 10.2.1
   resolution: "@typechain/ethers-v5@npm:10.2.1"
@@ -1549,7 +1556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.6.3":
+"@types/node@npm:*":
   version: 20.7.0
   resolution: "@types/node@npm:20.7.0"
   checksum: 1b2919925c213f4d2039ada7a8354c998e144f7291db8d719ef58ea9924ab636c113690073b0ec3b82ba62907385f7e0f51e9d1583c1a818776daa5156d3a590
@@ -1560,6 +1567,13 @@ __metadata:
   version: 10.17.60
   resolution: "@types/node@npm:10.17.60"
   checksum: 2cdb3a77d071ba8513e5e8306fa64bf50e3c3302390feeaeff1fd325dd25c8441369715dfc8e3701011a72fed5958c7dfa94eb9239a81b3c286caa4d97db6eef
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.6.3":
+  version: 20.7.1
+  resolution: "@types/node@npm:20.7.1"
+  checksum: 3140bd6c9130f1ed73a78ce7a1765ee43e155c1eea50eea45e18faeb31d11d97a84fffdc5e3a97582101d2f57d2652a50f510ede6c702780267bad74c822d56c
   languageName: node
   linkType: hard
 
@@ -3092,9 +3106,10 @@ __metadata:
   resolution: "eip712service@workspace:."
   dependencies:
     "@jpmorganchase/onyx-ssi-sdk": ^0.0.1
+    "@tsconfig/recommended": ^1.0.3
     "@types/node": ^20.6.3
     did-jwt-vc: 3.1.3
-    ethers: 5
+    ethers: ^5
     typescript: ^5.2.2
   languageName: unknown
   linkType: soft
@@ -3564,7 +3579,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:5, ethers@npm:^5.7.1, ethers@npm:^5.7.2":
+"ethers@npm:^4.0.40":
+  version: 4.0.49
+  resolution: "ethers@npm:4.0.49"
+  dependencies:
+    aes-js: 3.0.0
+    bn.js: ^4.11.9
+    elliptic: 6.5.4
+    hash.js: 1.1.3
+    js-sha3: 0.5.7
+    scrypt-js: 2.0.4
+    setimmediate: 1.0.4
+    uuid: 2.0.1
+    xmlhttprequest: 1.8.0
+  checksum: 357115348a5f1484c7745fae1d852876788216c7d94c072c80132192f1800c4d388433ea2456750856641d6d4eed8a3b41847eb44f5e1c42139963864e3bcc38
+  languageName: node
+  linkType: hard
+
+"ethers@npm:^5, ethers@npm:^5.7.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -3599,23 +3631,6 @@ __metadata:
     "@ethersproject/web": 5.7.1
     "@ethersproject/wordlists": 5.7.0
   checksum: b7c08cf3e257185a7946117dbbf764433b7ba0e77c27298dec6088b3bc871aff711462b0621930c56880ff0a7ceb8b1d3a361ffa259f93377b48e34107f62553
-  languageName: node
-  linkType: hard
-
-"ethers@npm:^4.0.40":
-  version: 4.0.49
-  resolution: "ethers@npm:4.0.49"
-  dependencies:
-    aes-js: 3.0.0
-    bn.js: ^4.11.9
-    elliptic: 6.5.4
-    hash.js: 1.1.3
-    js-sha3: 0.5.7
-    scrypt-js: 2.0.4
-    setimmediate: 1.0.4
-    uuid: 2.0.1
-    xmlhttprequest: 1.8.0
-  checksum: 357115348a5f1484c7745fae1d852876788216c7d94c072c80132192f1800c4d388433ea2456750856641d6d4eed8a3b41847eb44f5e1c42139963864e3bcc38
   languageName: node
   linkType: hard
 
