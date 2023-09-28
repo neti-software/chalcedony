@@ -1,0 +1,127 @@
+.container {
+  display: flex;
+  flex-direction: column;
+
+  .collect {
+    padding: 77px 0 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .box {
+      padding: 25px;
+
+      @media (min-width: 1280px) {
+        padding: 45px;
+      }
+
+      .title {
+        display: flex;
+        color: #374151;
+        font-family: Poppins;
+        font-size: 34px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 30px;
+        align-items: center;
+
+        span {
+          margin-left: 10px;
+          color: #374151;
+          font-family: Poppins;
+          font-style: italic;
+          font-weight: 500;
+          line-height: normal;
+        }
+
+        @media (min-width: 768px) {
+          flex-direction: row;
+        }
+      }
+
+      .tokenImage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .logoContainer {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+
+          .label {
+            color: #fff;
+            font-family: Poppins;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+          }
+
+          .amount {
+            color: #fff;
+            text-align: center;
+            font-family: Poppins;
+            font-size: 15px;
+            font-style: italic;
+            font-weight: 275;
+            line-height: normal;
+          }
+        }
+      }
+
+      .data {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+
+        .label {
+          color: #374151;
+          font-family: Poppins;
+          font-size: 15px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+        }
+
+        .value {
+          color: #374151;
+          font-family: Poppins;
+          font-size: 15px;
+          font-style: italic;
+          font-weight: 275;
+          line-height: normal;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
+
+  .action {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+    .collectButton {
+      width: 243px;
+      height: 60px;
+      border-radius: 13px;
+      background: #fff;
+      border: none;
+      color: #000;
+      font-family: Poppins;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      cursor: pointer;
+    }
+  }
+}

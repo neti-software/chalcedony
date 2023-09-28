@@ -1,0 +1,19 @@
+.container {
+  box-sizing: border-box;
+  border-radius: 37px;
+  width: 950px;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0.4) -17.43%,
+    rgba(255, 255, 255, 0.1) 95%
+  );
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+  padding: 25px 27px 25px 28px;
+  margin: 20px;
+
+  @media (min-width: 1280px) {
+    padding: 45px 47px 45px 88px;
+    width: 1107px;
+    margin: 0px;
+  }
+}
