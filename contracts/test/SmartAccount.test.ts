@@ -103,6 +103,8 @@ describe('Smart Account', function () {
     };
     const signedTxHash = EIP712Signer.getSignedDigest(tx);
 
+    const customSig = ethers.utils.joinSignature(signer._signingKey().signDigest(signedTxHash));
+    console.log(customSig);
     tx.customData.customSignature = IEncodings.encodeFunctionData("accountSignature", [
       inBlancoVC,
       await inBlancoVC.sign(smartAccountSigner, domainSeparator),

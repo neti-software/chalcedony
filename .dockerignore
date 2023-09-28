@@ -1,0 +1,9 @@
+**/node_modules/
+**/dist/
+**/.git/
+
+app/
+contracts/
+EIP712Service/
+schemas/
+local-setup/

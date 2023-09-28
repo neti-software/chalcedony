@@ -1,3 +1,4 @@
+import { TypedDataSigner } from "@ethersproject/abstract-signer";
 import { DIDWithKeys } from "@jpmorganchase/onyx-ssi-sdk";
 import { CredentialPayload } from "did-jwt-vc";
 import { Wallet } from "ethers";
@@ -107,6 +108,23 @@ export class EIP712Service {
     this.eip712Config = eip712Config;
   }
 
+  public async signVCWithEthers(
+    signer: TypedDataSigner,
+    token: CredentialPayload,
+    credentialSubjectTypes: any
+  ): Promise<string> {
+    const credentialTypedData = this.getEIP712CredentialTypedData(
+      token,
+      credentialSubjectTypes
+    );
+
+    return await signer._signTypedData(
+      credentialTypedData.domain,
+      credentialTypedData.types,
+      credentialTypedData.message
+    );
+  }
+
   public async signVC(
     keys: DIDWithKeys,
     token: CredentialPayload,
@@ -134,7 +152,7 @@ export class EIP712Service {
     };
   }
 
-  public onyxCredentialToEIP712Credential(
+  public static onyxCredentialToEIP712Credential(
     credential: CredentialPayload
   ): EIP712CredentialPayload {
     const _context = Array.isArray(credential["@context"])
@@ -161,7 +179,7 @@ export class EIP712Service {
     credential: CredentialPayload,
     credentialSubjectTypes: any
   ): EIP712CredentialTypedData {
-    const message = this.onyxCredentialToEIP712Credential(credential);
+    const message = EIP712Service.onyxCredentialToEIP712Credential(credential);
 
     return {
       domain: this.getDomainTypedData(),
