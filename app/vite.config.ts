@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     nodePolyfills(),
   ],
+  build: {
+    sourcemap: 'inline',
+  },
   css: {
     modules: {
       localsConvention: "camelCaseOnly",

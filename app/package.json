@@ -15,6 +15,7 @@
     "@ethersproject/abstract-signer": "^5.7.0",
     "@jpmorganchase/onyx-ssi-sdk": "^0.0.1",
     "@types/node": "^20.6.3",
+    "@types/qrcode": "^1.5.2",
     "@web3-onboard/core": "^2.21.1",
     "@web3-onboard/injected-wallets": "^2.10.6",
     "@web3-onboard/react": "^2.8.12",

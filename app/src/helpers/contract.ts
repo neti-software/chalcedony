@@ -40,14 +40,14 @@ export const getReadContractByAddress = (
   return contractInstance;
 };
 
-const PAYMASTER_CONTRACT = import.meta.env.VITE_PAYMASTER_CONTRACT ?? ethers.constants.AddressZero;
+export const PAYMASTER_CONTRACT = import.meta.env.VITE_PAYMASTER_CONTRACT ?? ethers.constants.AddressZero;
 export const getPaymasterContract = (
   signer?: Signer
 ): Contract => {
   return getReadContractByAddress(CONTRACTS.Paymaster, PAYMASTER_CONTRACT, signer);
 }
 
-const ACCOUNT_FACTORY_CONTRACT = import.meta.env.VITE_ACCOUNT_FACTORY_CONTRACT ?? ethers.constants.AddressZero;
+export const ACCOUNT_FACTORY_CONTRACT = import.meta.env.VITE_ACCOUNT_FACTORY_CONTRACT ?? ethers.constants.AddressZero;
 export const getAccountFactoryContract = (
   signer?: Signer
 ): Contract => {

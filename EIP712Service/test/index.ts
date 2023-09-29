@@ -27,7 +27,7 @@ const main = async () => {
     subjectDID.did,
     subjectData,
     [PROOF_OF_NAME],
-    { id: "banana", expirationDate: "dfdf" }
+    { id: "banana"  }
   );
 
   //create credential options
