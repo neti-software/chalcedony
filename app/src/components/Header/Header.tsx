@@ -1,12 +1,12 @@
 import { FC, useState } from "react";
 import styles from "./Header.module.scss";
 import WalletConnector from "../WalletConnector";
-import { createInBlancoVC, createTransactionPaidVC, fetchRegisteredAccountVC } from "../../helpers/vc";
+import { createInBlancoVC, createTransactionPaidVC, did2address, fetchRegisteredAccountVC } from "../../helpers/vc";
 import { useConnectWallet } from "@web3-onboard/react";
 import { createSmartAccount } from "../../helpers/accountFactory";
 import { Web3Provider } from "zksync-web3";
 import { ethers } from "ethers";
-import { getPaymasterContract } from "../../helpers/contract";
+import { CONTRACTS, getPaymasterContract, getReadContractByAddress } from "../../helpers/contract";
 import { transferERC20FromSmartAccount } from "../../helpers/smartAccount";
 
 const TestHack = () => {
@@ -28,6 +28,11 @@ const TestHack = () => {
     const inBlanco = await createInBlancoVC(smartAccount.contract, smartAccount.did);
     const transactionPaid = await createTransactionPaidVC(smartAccount.contract, signer);
 
+    // transfer ERC-20 tokens
+    const token = getReadContractByAddress(CONTRACTS.Token, import.meta.env.VITE_TEST_TOKEN_CONTRACT ?? "", signer);
+    const transferTx = await token.transfer(smartAccount.contract.address, 100);
+    await transferTx.wait();
+
     // fund paymaster
     const paymaster = getPaymasterContract(signer);
     const expectedBalance = ethers.utils.parseEther("0.1");
@@ -41,7 +46,7 @@ const TestHack = () => {
     }
 
     // encode it
-    setPayload(btoa(JSON.stringify({ inBlanco, transactionPaid })));
+    setPayload(btoa(JSON.stringify({ token: token.address, amount: 100, inBlanco, transactionPaid })));
   };
 
   const redeem = async () => {
@@ -50,7 +55,8 @@ const TestHack = () => {
     const signer = provider.getSigner();
 
     const { inBlanco, transactionPaid } = JSON.parse(atob(payload));
-    const registeredAccount = await fetchRegisteredAccountVC(inBlanco.vc.id, signer);
+    const accountAddress = did2address(transactionPaid.vc.credentialSubject.id);
+    const registeredAccount = await fetchRegisteredAccountVC(accountAddress, inBlanco.vc.id, signer);
 
     await transferERC20FromSmartAccount(
       import.meta.env.VITE_TEST_TOKEN_CONTRACT ?? "",

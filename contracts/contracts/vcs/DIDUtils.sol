@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-error InvalidHexChar();
-error InvalidHexString();
-error InvalidDID();
+error InvalidHexChar(); // 0xb68e6101
+error InvalidHexString(); // 0xdca11d80
+error InvalidDID(); // 0x1082e8ae
 
 library DIDUtils {
     function parseHexChar(uint8 char) internal pure returns (uint8) {

@@ -2880,6 +2880,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/qrcode@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@types/qrcode@npm:1.5.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: 2f696916e66002ecf0616451a44308b33948ce68f7ee1eae0ff8a4acc133024a3d9a7314e9dcb6455ab7f7e126963c204a687a665e3688ba39ec4ae80eb30670
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:^6.2.31":
   version: 6.9.8
   resolution: "@types/qs@npm:6.9.8"
@@ -3406,6 +3415,7 @@ __metadata:
     "@ethersproject/abstract-signer": ^5.7.0
     "@jpmorganchase/onyx-ssi-sdk": ^0.0.1
     "@types/node": ^20.6.3
+    "@types/qrcode": ^1.5.2
     "@types/react": ^18.2.15
     "@types/react-dom": ^18.2.7
     "@typescript-eslint/eslint-plugin": ^6.0.0
@@ -5088,13 +5098,13 @@ __metadata:
 
 "eip712service@file:../EIP712Service::locator=app%40workspace%3A.":
   version: 0.0.1
-  resolution: "eip712service@file:../EIP712Service#../EIP712Service::hash=d0f3fe&locator=app%40workspace%3A."
+  resolution: "eip712service@file:../EIP712Service#../EIP712Service::hash=e93a50&locator=app%40workspace%3A."
   dependencies:
     "@ethersproject/abstract-signer": ^5.7.0
     "@jpmorganchase/onyx-ssi-sdk": ^0.0.1
     did-jwt-vc: ^3.1.3
     ethers: ^5
-  checksum: b983557a23b4f1f82464bc3553895dbf40f16795fa1d819ca8f3e5b853227219729ed691473a661e44446063182cfa54379a56a549449e2d2d65951c5ae6b919
+  checksum: f9fe6ae92c45486f7ffef00ed4e63095248968b351065dddcf61a7a40d14c21f70e8b4e9ee46e55f98fe0634f02110a0560543066174679a9181f1a9aa724c5c
   languageName: node
   linkType: hard
 

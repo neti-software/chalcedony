@@ -1993,7 +1993,7 @@ __metadata:
     "@types/chai": ^4.3.4
     "@types/mocha": ^10.0.1
     chai: ^4.3.8
-    chalcedony-vcs: "file:../chalcedony-vcs"
+    chalcedony-vcs: "link:../chalcedony-vcs"
     dotenv: ^16.0.3
     ethers: ^5.7.2
     hardhat: ^2.12.4
@@ -2006,14 +2006,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"chalcedony-vcs@file:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A.":
-  version: 0.0.0
-  resolution: "chalcedony-vcs@file:../chalcedony-vcs#../chalcedony-vcs::hash=df6e60&locator=chalcedony-contracts%40workspace%3A."
-  dependencies:
-    ethers: ^5
-  checksum: 91e3ed9e13593aa745ad623367215a92315bf72fbe1d973cc163e1d190f9c588d23c05864df3fd11d6fcc3c2c31989c5a6003b67422e3038614ffbc2385c37f9
+"chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "chalk@npm:4.1.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
   version: 4.1.2
@@ -2648,7 +2645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5, ethers@npm:^5.7.1, ethers@npm:^5.7.2":
+"ethers@npm:^5.7.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:

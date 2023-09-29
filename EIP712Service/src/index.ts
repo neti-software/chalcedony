@@ -1,7 +1,7 @@
 import { TypedDataSigner } from "@ethersproject/abstract-signer";
 import { DIDWithKeys } from "@jpmorganchase/onyx-ssi-sdk";
 import { CredentialPayload } from "did-jwt-vc";
-import { Wallet } from "ethers";
+import { Wallet, Signer } from "ethers";
 
 // TYPES
 export interface EIP712Config {
@@ -76,9 +76,9 @@ export interface EIP712CredentialTypedData
 
 export const VERIFIABLE_CREDENTIAL_PRIMARY_TYPE = "VerifiableCredential";
 export const VERIFIABLE_CREDENTIAL_EIP712_TYPE: TypedData[] = [
-  { name: "_context", type: "string" },
-  { name: "_type", type: "string" },
+  { name: "_context", type: "string[]" },
   { name: "id", type: "string" },
+  { name: "_type", type: "string[]" },
   { name: "issuer", type: "Issuer" },
   { name: "credentialSubject", type: "CredentialSubject" },
 ];
@@ -109,7 +109,7 @@ export class EIP712Service {
   }
 
   public async signVCWithEthers(
-    signer: TypedDataSigner,
+    signer: TypedDataSigner & Signer,
     token: CredentialPayload,
     credentialSubjectTypes: any
   ): Promise<string> {
@@ -186,7 +186,7 @@ export class EIP712Service {
       primaryType: VERIFIABLE_CREDENTIAL_PRIMARY_TYPE,
       message,
       types: {
-        CredentialSchema: CREDENTIAL_SCHEMA_EIP712_TYPE,
+        [VERIFIABLE_CREDENTIAL_PRIMARY_TYPE]: VERIFIABLE_CREDENTIAL_EIP712_TYPE,
         ...credentialSubjectTypes,
       },
     };

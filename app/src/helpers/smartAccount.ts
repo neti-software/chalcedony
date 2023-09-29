@@ -14,13 +14,13 @@ export async function transferERC20FromSmartAccount(
   signer: Signer
 ) {
   const recipient = await signer.getAddress();
-  const smartAccountAddress = did2address(inBlanco.vc.issuer.id);
+  const smartAccountAddress = did2address(transactionPaid.vc.credentialSubject.id);
   const paymasterParams = await encodePaymasterParams(EIP712Service.onyxCredentialToEIP712Credential(transactionPaid.vc), transactionPaid.proofValue);
   const token = getReadContractByAddress(CONTRACTS.Token, tokenAddress, signer);
   const balance = await token.balanceOf(smartAccountAddress);
 
   const transferTx = await token.populateTransaction.transfer(recipient, balance);
-  const gasLimit = (await signer.provider.estimateGas(transferTx)).add(70000);
+  const gasLimit = (await signer.provider.estimateGas(transferTx)).add(1000000);
   const gasPrice = await signer.provider.getGasPrice();
   const chainId = (await signer.provider.getNetwork()).chainId;
   const tx = {
@@ -40,19 +40,17 @@ export async function transferERC20FromSmartAccount(
 
   const zksyncSigner = new EIP712Signer(signer, chainId);
   const encodings = new ethers.utils.Interface(CONTRACTS.IEncodings.abi);
-  const customSig = ethers.utils.joinSignature(await zksyncSigner.sign(tx));
-  tx.customData.customSignature = encodings.encodeFunctionData("accountSignature", [
+  const args = [
     EIP712Service.onyxCredentialToEIP712Credential(inBlanco.vc),
     inBlanco.proofValue,
     registeredAccount.vc,
     registeredAccount.proofValue,
-    customSig,
-  ]);
-  console.log(tx);
+    ethers.utils.joinSignature(await zksyncSigner.sign(tx)),
+  ];
+  tx.customData.customSignature = encodings.encodeFunctionData("accountSignature", args);
   const serializedTx = utils.serialize({ ...tx });
 
-  console.log(`Bobs balance before: ${await token.balanceOf(recipient)}`)
   const sentTx = await signer.provider.sendTransaction(serializedTx);
-  await sentTx.wait();
-  console.log(`Bobs balance after: ${await token.balanceOf(recipient)}`)
+  const receipt = await sentTx.wait();
+  console.log(receipt.logs.map(l => token.interface.parseLog(l)));
 }
