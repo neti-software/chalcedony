@@ -1,4 +1,4 @@
-name: Test contracts
+name: Build, Lint & Test contracts
 
 on:
   workflow_dispatch:

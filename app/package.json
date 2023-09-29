@@ -7,17 +7,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "watch": "vite build --watch",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@jpmorganchase/onyx-ssi-sdk": "^0.0.1",
     "@types/node": "^20.6.3",
     "@web3-onboard/core": "^2.21.1",
     "@web3-onboard/injected-wallets": "^2.10.6",
     "@web3-onboard/react": "^2.8.12",
     "autoprefixer": "^10.4.15",
     "classnames": "^2.3.2",
-    "eip712service": "link:../EIP712Service",
+    "eip712service": "file:../EIP712Service",
     "ethers": "^5",
     "postcss": "^8.4.29",
     "qrcode": "^1.5.3",
@@ -40,6 +43,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "sass": "^1.67.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-node-polyfills": "^0.14.1"
   }
 }

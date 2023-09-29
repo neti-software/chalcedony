@@ -1,0 +1,7 @@
+FROM node:lts
+ADD . /chalcedony
+WORKDIR /chalcedony/chalcedony-vcs
+RUN corepack enable && yarn install --immutable && yarn tsc
+WORKDIR /chalcedony/witness-backend
+RUN corepack enable && yarn install --immutable
+CMD yarn start

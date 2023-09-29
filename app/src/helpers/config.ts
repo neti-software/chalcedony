@@ -1,3 +1,3 @@
-export const CHAIN_ID = import.meta.env.CHAIN_ID;
+export const CHAIN_ID = import.meta.env.VITE_CHAIN_ID;
 export const RPC_ENDPOINT_URL =
-  import.meta.env.ENDPOINT_URL || "https://testnet.era.zksync.dev";
+  import.meta.env.VITE_ENDPOINT_URL || "https://testnet.era.zksync.dev";

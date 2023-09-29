@@ -1,0 +1,75 @@
+name: Build, Lint, Test and Publish Witness Backend
+
+on:
+  push:
+    paths:
+      - 'witness-backend/**'
+      - '.github/workflows/test-and-publish-witness-backend.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-witness-backend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+      - name: Install dependencies
+        working-directory: ./witness-backend/
+        run: corepack enable && yarn install --immutable
+      
+      - name: Install chalcedony-vcs deps
+        working-directory: ./chalcedony-vcs
+        run: yarn install --immutable
+
+      - name: Build chalcedony-vcs
+        working-directory: ./chalcedony-vcs
+        run: yarn tsc
+
+      - name: Lint
+        working-directory: ./witness-backend/
+        run: yarn lint
+
+      - name: Test
+        working-directory: ./witness-backend/
+        run: yarn test
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # set latest tag for default branch
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          file: Dockerfile.witness-backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

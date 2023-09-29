@@ -1,44 +1,27 @@
 # zkSync Hardhat project
 
-This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
+## Quick start
 
-## Project structure
+To have compatibility with default `.env.example` in FE, make sure you're executing this in this exact order on fresh (cleaned with `clear.sh`) [local-setup](../local-setup/README.md).
 
-- `/contracts`: smart contracts.
-- `/deploy`: deployment and contract interaction scripts.
-- `/test`: test files
-- `hardhat.config.ts`: configuration file.
+```
+yarn
+yarn hardhat compile
+cp .env.example .env
+export NODE_ENV=test ALICE_PRIVATE_KEY=0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110
+
+# should say that deployed to address 0x111C3E89Ce80e62EE88318C2804920D4c96f92bb
+yarn hardhat deploy-zksync --script deploy-paymaster.ts
+
+# should say that deployed to address 0x4B5DF730c2e6b28E17013A1485E5d9BC41Efe021
+yarn hardhat deploy-zksync --script deploy-factory.ts
+
+# should say that deployed to address 0x26b368C3Ed16313eBd6660b72d8e4439a697Cb0B
+yarn hardhat deploy-zksync --script deploy-test-token.ts
+```
 
 ## Commands
 
 - `yarn hardhat compile` will compile the contracts.
-- `yarn run deploy` will execute the deployment script `/deploy/deploy-greeter.ts`. Requires [environment variable setup](#environment-variables).
-- `yarn run greet` will execute the script `/deploy/use-greeter.ts` which interacts with the Greeter contract deployed.
 - `yarn run lint`: lint the code using solhint
-- `yarn test`: run tests. **Check test requirements below.**
-
-Both `yarn run deploy` and `yarn run greet` are configured in the `package.json` file and run `yarn hardhat deploy-zksync`.
-
-### Environment variables
-
-In order to prevent users to leak private keys, this project includes the `dotenv` package which is used to load environment variables. It's used to load the wallet private key, required to run the deploy script.
-
-To use it, rename `.env.example` to `.env` and enter your private key.
-
-```
-WALLET_PRIVATE_KEY=123cde574ccff....
-```
-
-### Local testing
-
-In order to run test, you need to start the zkSync local environment. Please check [this section of the docs](https://v2-docs.zksync.io/api/hardhat/testing.html#prerequisites) which contains all the details.
-
-If you do not start the zkSync local environment, the tests will fail with error `Error: could not detect network (event="noNetwork", code=NETWORK_ERROR, version=providers/5.7.2)`
-
-## Official Links
-
-- [Website](https://zksync.io/)
-- [Documentation](https://v2-docs.zksync.io/dev/)
-- [GitHub](https://github.com/matter-labs)
-- [Twitter](https://twitter.com/zksync)
-- [Discord](https://discord.gg/nMaPGrDDwk)
+- `yarn test`: run tests

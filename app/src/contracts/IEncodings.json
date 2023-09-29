@@ -1,0 +1,191 @@
+{
+  "contractName": "IEncodings",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "string[]",
+              "name": "_context",
+              "type": "string[]"
+            },
+            {
+              "internalType": "string",
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "_type",
+              "type": "string[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct VCGeneric.Issuer",
+              "name": "issuer",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct VCGeneric.CredentialSubject",
+              "name": "credentialSubject",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct VCGeneric.VerifiableCredential",
+          "name": "inBlancoVC",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "inBlancoProof",
+          "type": "bytes"
+        },
+        {
+          "components": [
+            {
+              "internalType": "string[]",
+              "name": "_context",
+              "type": "string[]"
+            },
+            {
+              "internalType": "string",
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "_type",
+              "type": "string[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct VCRegisteredAccountController.Issuer",
+              "name": "issuer",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "id",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct VCRegisteredAccountController.RegistrationClaim",
+                  "name": "registeredWith",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct VCRegisteredAccountController.CredentialSubject",
+              "name": "credentialSubject",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct VCRegisteredAccountController.VerifiableCredential",
+          "name": "registeredAccountVC",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "registeredAccountProof",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bytes",
+          "name": "eoaSignature",
+          "type": "bytes"
+        }
+      ],
+      "name": "accountSignature",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "string[]",
+              "name": "_context",
+              "type": "string[]"
+            },
+            {
+              "internalType": "string",
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "internalType": "string[]",
+              "name": "_type",
+              "type": "string[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct VCGeneric.Issuer",
+              "name": "issuer",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "id",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct VCGeneric.CredentialSubject",
+              "name": "credentialSubject",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct VCGeneric.VerifiableCredential",
+          "name": "vc",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "proof",
+          "type": "bytes"
+        }
+      ],
+      "name": "paymasterInnerInput",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
