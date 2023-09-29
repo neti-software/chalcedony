@@ -25,3 +25,10 @@ yarn hardhat deploy-zksync --script deploy-test-token.ts
 - `yarn hardhat compile` will compile the contracts.
 - `yarn run lint`: lint the code using solhint
 - `yarn test`: run tests
+
+## Testnet deployment
+
+Deployed from commit 7f8f5bace3b01663ca16487b931b3e0674e3c3a6
+- Paymaster: [0x7d94ea6AfA13918A05c64400338AC6622A4aCd9f](https://goerli.explorer.zksync.io/address/0x7d94ea6AfA13918A05c64400338AC6622A4aCd9f#contract)
+- AccountFactory: 0xb9c88Ad991bD1836F3912bd644af8bC02b10D45F
+- TestToken: [0x4A1979ff18f84155fC96f7384d34c3Eb908eDC2F](https://goerli.explorer.zksync.io/address/0x4A1979ff18f84155fC96f7384d34c3Eb908eDC2F#contract)
