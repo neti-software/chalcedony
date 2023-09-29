@@ -23,3 +23,7 @@ yarn test
 ```
 yarn run dev
 ```
+
+## Testnet
+
+Testnet compatible deployment: `https://chalcedony-witness-backend.onrender.com/api/v1/witness` (will take a while to process first request after inactivity)
