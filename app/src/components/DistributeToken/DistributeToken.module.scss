@@ -279,6 +279,15 @@
         margin-bottom: 0px;
         width: 400px;
       }
+
+      &:disabled {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.19) 100%
+        );
+        cursor: not-allowed;
+      }
     }
 
     .activeChannel {
@@ -309,6 +318,15 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
+
+      &:disabled {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.19) 100%
+        );
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -373,5 +391,16 @@
         }
       }
     }
+  }
+}
+
+.dialogQrCode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 250px;
+    height: 250px;
   }
 }
