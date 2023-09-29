@@ -9,6 +9,7 @@ type SymbolInputProps = {
   min?: number;
   max?: number;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
 };
 
 const SymbolInput: FC<SymbolInputProps> = ({
@@ -19,6 +20,7 @@ const SymbolInput: FC<SymbolInputProps> = ({
   min = 0,
   max = 20,
   placeholder,
+  disabled = false,
 }) => {
   return (
     <div className={styles.symbolInput}>
@@ -31,6 +33,7 @@ const SymbolInput: FC<SymbolInputProps> = ({
         min={min}
         max={max}
         placeholder={placeholder}
+        disabled={disabled}
       ></input>
     </div>
   );

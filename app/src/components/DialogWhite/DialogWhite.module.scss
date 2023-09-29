@@ -1,0 +1,57 @@
+.backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog {
+  display: flex;
+  width: 90%;
+  top: 50%;
+  left: 50%;
+  max-height: 90%;
+  margin: 0 auto;
+  position: fixed;
+  transform: translate(-50%, -50%);
+  z-index: 9999999 !important;
+
+  @media (min-width: 768px) {
+    width: 50%;
+  }
+
+  .close {
+    z-index: 1000;
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border: 1px solid gray;
+    text-decoration: none;
+    width: 150px;
+    height: 50px;
+    background-color: #fff;
+    color: #000;
+  }
+
+  .modal {
+    background-color: #fff;
+    width: 100%;
+    padding: 60px 60px;
+    align-items: initial;
+    justify-content: initial;
+    display: block;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+}
