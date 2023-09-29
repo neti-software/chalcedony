@@ -20,7 +20,7 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
       - name: Install dependencies
         working-directory: ./app/
-        run: corepack enable && yarn install --frozen-lockfile
+        run: corepack enable && yarn install --immutable
       
       - name: Install EIP712Service deps
         working-directory: ./EIP712Service

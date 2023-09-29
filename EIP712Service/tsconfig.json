@@ -1,13 +1,10 @@
 {
+  "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "ES2019",
     "declaration": true,
-    "outDir": "dist",
-    "types": ["node"],
-    "skipLibCheck": true
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"
-  ],
+  ]
 }
