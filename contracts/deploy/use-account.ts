@@ -11,7 +11,7 @@ import * as AccountArtifact from "../artifacts-zk/contracts/Account.sol/Account.
 import * as PaymasterArtifact from "../artifacts-zk/contracts/Paymaster.sol/Paymaster.json";
 import * as TestTokenArtifact from "../artifacts-zk/contracts/test/TestToken.sol/TestToken.json";
 import * as IEncodingsArtifact from "../artifacts-zk/contracts/IEncodings.sol/IEncodings.json";
-import { GenericCredentialSubject, Issuer, RegisteredAccountControllerCredentialSubject, RegistrationClaim, VC } from "chalcedony-vcs";
+import { GenericCredentialSubject, Issuer, RegisteredAccountControllerCredentialSubject, RegistrationClaim, VC } from "@kacperzuk-neti/chalcedony-vcs";
 import { Account, Paymaster, TestToken } from "../typechain-types";
 
 const ALICE_PRIVATE_KEY = process.env.ALICE_PRIVATE_KEY || "";

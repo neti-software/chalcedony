@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { encodePaymasterParams } from "./paymaster";
 import { Address } from "zksync-web3/build/src/types";
 import { did2address } from "./vc";
-import { EIP712Service } from "eip712service";
+import { EIP712Service } from "@kacperzuk-neti/eip712service";
 
 export async function transferERC20FromSmartAccount(
   tokenAddress: Address,
