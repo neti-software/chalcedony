@@ -3,7 +3,7 @@ import { Wallet, Provider, utils, EIP712Signer, types } from 'zksync-web3';
 import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import { Account, DummyPaymaster, TestToken } from '../typechain-types';
-import { Issuer, VC, GenericCredentialSubject, RegisteredAccountControllerCredentialSubject, RegistrationClaim } from 'chalcedony-vcs';
+import { Issuer, VC, GenericCredentialSubject, RegisteredAccountControllerCredentialSubject, RegistrationClaim } from '@kacperzuk-neti/chalcedony-vcs';
 import { TypedDataDomain, ethers } from 'ethers';
 import { PaymasterParams } from 'zksync-web3/build/src/types';
 

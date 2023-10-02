@@ -54,20 +54,9 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Enable corepack
-        run: corepack enable
-
-      - name: Install chalcedony-vcs deps
-        working-directory: ./chalcedony-vcs
-        run: yarn install --immutable
-
-      - name: Build chalcedony-vcs
-        working-directory: ./chalcedony-vcs
-        run: yarn tsc
-
       - name: Install contracts deps
         working-directory: ./contracts
-        run: yarn install --immutable
+        run: corepack enable && yarn install --immutable
         
       - name: Run build
         working-directory: ./contracts/

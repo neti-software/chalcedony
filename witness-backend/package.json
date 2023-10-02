@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalcedony-vcs": "link:../chalcedony-vcs",
+    "@kacperzuk-neti/chalcedony-vcs": "^0.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.1.4",
     "ethers": "^5",

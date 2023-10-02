@@ -1,5 +1,5 @@
 import express from 'express';
-import { VC, RegisteredAccountControllerCredentialSubject, RegistrationClaim, Issuer } from 'chalcedony-vcs';
+import { VC, RegisteredAccountControllerCredentialSubject, RegistrationClaim, Issuer } from '@kacperzuk-neti/chalcedony-vcs';
 import { Wallet } from 'ethers';
 
 const router = express.Router();
