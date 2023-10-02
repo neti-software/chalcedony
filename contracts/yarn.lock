@@ -535,6 +535,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kacperzuk-neti/chalcedony-vcs@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@kacperzuk-neti/chalcedony-vcs@npm:0.0.1"
+  dependencies:
+    ethers: ^5
+  checksum: dfa64fc7509e572c2dbcc49190d601e31a4475ec78b5f4790bbc6e8f37011978575ab155777ac52af17781784c907341896f2c63c6dbf4358eb36c79f589226a
+  languageName: node
+  linkType: hard
+
 "@matterlabs/hardhat-zksync-chai-matchers@npm:^0.1.4":
   version: 0.1.4
   resolution: "@matterlabs/hardhat-zksync-chai-matchers@npm:0.1.4"
@@ -1979,6 +1988,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "chalcedony-contracts@workspace:."
   dependencies:
+    "@kacperzuk-neti/chalcedony-vcs": ^0.0.1
     "@matterlabs/hardhat-zksync-chai-matchers": ^0.1.4
     "@matterlabs/hardhat-zksync-deploy": ^0.6.5
     "@matterlabs/hardhat-zksync-solc": ^0.4.2
@@ -1993,7 +2003,6 @@ __metadata:
     "@types/chai": ^4.3.4
     "@types/mocha": ^10.0.1
     chai: ^4.3.8
-    chalcedony-vcs: "link:../chalcedony-vcs"
     dotenv: ^16.0.3
     ethers: ^5.7.2
     hardhat: ^2.12.4
@@ -2004,12 +2013,6 @@ __metadata:
     typescript: ^4.9.4
     zksync-web3: ^0.14.3
   languageName: unknown
-  linkType: soft
-
-"chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "chalcedony-vcs@link:../chalcedony-vcs::locator=chalcedony-contracts%40workspace%3A."
-  languageName: node
   linkType: soft
 
 "chalk@npm:4.1.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
@@ -2645,7 +2648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.7.1, ethers@npm:^5.7.2":
+"ethers@npm:^5, ethers@npm:^5.7.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:

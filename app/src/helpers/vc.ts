@@ -1,6 +1,6 @@
 import { Contract, Signer, Wallet } from "zksync-web3";
 import { DID, DIDWithKeys, createCredential } from "@jpmorganchase/onyx-ssi-sdk";
-import { EIP712Service } from "eip712service";
+import { EIP712Service } from "@kacperzuk-neti/eip712service";
 import { CONTRACTS, getPaymasterContract, getReadContractByAddress } from "./contract";
 import { TypedDataSigner } from "@ethersproject/abstract-signer";
 import { Address } from "zksync-web3/build/src/types";

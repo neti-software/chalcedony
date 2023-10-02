@@ -3,7 +3,7 @@ import { Wallet, Provider, utils } from 'zksync-web3';
 import * as hre from 'hardhat';
 import { Deployer } from '@matterlabs/hardhat-zksync-deploy';
 import { Paymaster, TestToken } from '../typechain-types';
-import { VC, GenericCredentialSubject, Issuer } from 'chalcedony-vcs';
+import { VC, GenericCredentialSubject, Issuer } from '@kacperzuk-neti/chalcedony-vcs';
 import { BigNumber, BytesLike, TypedDataDomain, ethers } from 'ethers';
 import { PaymasterParams } from 'zksync-web3/build/src/types';
 

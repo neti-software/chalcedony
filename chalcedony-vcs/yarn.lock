@@ -407,6 +407,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kacperzuk-neti/chalcedony-vcs@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@kacperzuk-neti/chalcedony-vcs@workspace:."
+  dependencies:
+    "@tsconfig/recommended": ^1.0.3
+    "@types/node": ^20.6.3
+    ethers: ^5
+    typescript: ^5.2.2
+  languageName: unknown
+  linkType: soft
+
 "@tsconfig/recommended@npm:^1.0.3":
   version: 1.0.3
   resolution: "@tsconfig/recommended@npm:1.0.3"
@@ -455,17 +466,6 @@ __metadata:
   checksum: 8a05c9f3c4b46572dec6ef71012b1946db6cae8c7bb60ccd4b7dd5a84655db49fe043ecc6272e7ef1f69dc53d6730b9e2a3a03a8310509a3d797a618cbee52be
   languageName: node
   linkType: hard
-
-"chalcedony-vcs@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "chalcedony-vcs@workspace:."
-  dependencies:
-    "@tsconfig/recommended": ^1.0.3
-    "@types/node": ^20.6.3
-    ethers: ^5
-    typescript: ^5.2.2
-  languageName: unknown
-  linkType: soft
 
 "elliptic@npm:6.5.4":
   version: 6.5.4
