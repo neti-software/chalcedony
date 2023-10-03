@@ -21,24 +21,13 @@ export const CONTRACTS = {
 
 const CONTRACTS_CACHE: { [key: string]: Contract } = {};
 
-export const zkSyncProvider =
-  import.meta.env.VITE_NODE_ENV == "test"
-    ? {
-        url: RPC_ENDPOINT_URL,
-        ethNetwork: "http://localhost:8545",
-      }
-    : {
-        url: "https://testnet.era.zksync.dev",
-        ethNetwork: "goerli",
-      };
-
 export const getReadContractByAddress = (
   contract: { abi: ContractInterface },
   address: string,
   signer?: Signer
 ): Contract => {
   if (CONTRACTS_CACHE[address]) return CONTRACTS_CACHE[address];
-  const provider = signer ?? new Provider(zkSyncProvider.url);
+  const provider = signer ?? new Provider(RPC_ENDPOINT_URL);
 
   const contractInstance = new Contract(address, contract.abi, provider);
   CONTRACTS_CACHE[address] = contractInstance;
