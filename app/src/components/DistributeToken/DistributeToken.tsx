@@ -31,6 +31,8 @@ import DialogWhite from "../DialogWhite";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
 import { toast } from "react-toastify";
+import Loader from "../Loader";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const steps: Array<{
   step: string;
@@ -88,6 +90,8 @@ const DistributeToken: FC = () => {
   const [tokensLeft, setTokensLeft] = useState("0");
   const [showQrDialog, setShowQrDialog] = useState<boolean>(false);
   const [qrCodeDialogData, setQrCodeDialogData] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCopiedToClipboard, setCopiedToClipboard] = useState(false);
 
   const [{ wallet }] = useConnectWallet();
 
@@ -217,24 +221,32 @@ const DistributeToken: FC = () => {
   const generateSingleQrCode = async (index: number) => {
     if (qrcodeInputs[index].generated) return;
 
-    const newItems = [...qrcodeInputs];
-    const payload = await generatePayload();
+    try {
+      setIsLoading(true);
+      const newItems = [...qrcodeInputs];
+      const payload = await generatePayload();
 
-    if (payload) {
-      toast.success("Success !! ", {
-        position: "top-center",
-      });
-    } else {
-      toast.error("Error", { position: "top-center" });
+      if (payload) {
+        toast.success("Success !! ", {
+          position: "top-center",
+        });
+      } else {
+        toast.error("Error", { position: "top-center" });
 
-      return;
+        return;
+      }
+
+      const url = `${window.location.origin}/collect?payload=${payload}`;
+      const qrCode = await generateQR(url);
+
+      newItems[index] = { generated: true, qrCode, payload, url };
+
+      setQrcodeInputs(newItems);
+    } catch (error) {
+      console.log("Error while generating payload", error);
+    } finally {
+      setIsLoading(false);
     }
-    const url = `${window.location.origin}/collect?payload=${payload}`;
-    const qrCode = await generateQR(url);
-
-    newItems[index] = { generated: true, qrCode, payload, url };
-
-    setQrcodeInputs(newItems);
   };
 
   const onChangeActiveToken = (tokenAddress: string) => {
@@ -263,6 +275,14 @@ const DistributeToken: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTokenBalanceLoading, amount, selectedToken, wallet]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCopiedToClipboard(false);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [isCopiedToClipboard]);
+
   return (
     <>
       <DialogWhite isOpen={showQrDialog} handleClose={closeQrCode}>
@@ -270,6 +290,7 @@ const DistributeToken: FC = () => {
           <img src={qrCodeDialogData} />
         </div>
       </DialogWhite>
+      {isLoading ? <Loader /> : null}
       <Box>
         <div className={styles.title}>
           <div>Distribute </div>
@@ -459,15 +480,43 @@ const DistributeToken: FC = () => {
                               Generate QR-Code
                             </button>
                             {input.generated ? (
-                              <div>
+                              <>
                                 <button
                                   className={styles.showQrButton}
                                   onClick={() => showQrCode(index)}
                                 >
                                   <img src={qrIcon} alt="show-qr" />
                                 </button>
-                                <span>{input.url}</span>
-                              </div>
+                                <CopyToClipboard
+                                  text={input.url ?? ""}
+                                  onCopy={() => setCopiedToClipboard(true)}
+                                >
+                                  <div
+                                    className={
+                                      isCopiedToClipboard
+                                        ? styles.copied
+                                        : styles.url
+                                    }
+                                  >
+                                    {isCopiedToClipboard
+                                      ? "Copied !"
+                                      : `${input.url?.slice(0, 20)}
+                                      [...]
+                                      ${input.url?.slice(
+                                        input.url.length - 10,
+                                        input.url.length
+                                      )}`}
+                                  </div>
+                                </CopyToClipboard>
+
+                                {/* <div className={styles.url}>
+                                  {input.url?.slice(0, 50)}[...]
+                                  {input.url?.slice(
+                                    input.url.length - 10,
+                                    input.url.length
+                                  )}
+                                </div> */}
+                              </>
                             ) : null}
                           </div>
                         );

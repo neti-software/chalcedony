@@ -1,0 +1,19 @@
+.backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.loader {
+  background: url("../../images/loader_circles.svg") no-repeat center center;
+  background-size: 150px;
+  position: absolute;
+  left: 0;
+  height: calc(100% - 60px);
+  width: 100%;
+  z-index: 9999998;
+}

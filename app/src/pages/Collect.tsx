@@ -8,13 +8,15 @@ import { transferERC20FromSmartAccount } from "../helpers/smartAccount";
 import { fromWei } from "../helpers/utils";
 import { did2address, fetchRegisteredAccountVC } from "../helpers/vc";
 import styles from "./Collect.module.scss";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 const Collect: FC = () => {
   const [searchParams] = useSearchParams();
   const fromBase64 = searchParams.get("payload");
   const [{ wallet }] = useConnectWallet();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { amount, inBlanco, token, transactionPaid } = JSON.parse(
     atob(fromBase64 ?? "")
@@ -31,6 +33,7 @@ const Collect: FC = () => {
     if (!wallet) return;
 
     try {
+      setIsLoading(true);
       // get metamask wallet signer - this should be Bob
       const provider = new Web3Provider(wallet.provider, "any");
       const signer = provider.getSigner();
@@ -57,11 +60,14 @@ const Collect: FC = () => {
       });
     } catch (error) {
       toast.error("Error", { position: "top-center" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className={styles.container}>
+      {isLoading ? <Loader /> : null}
       <div className={styles.collect}>
         <Box className={styles.box}>
           <div className={styles.title}>
