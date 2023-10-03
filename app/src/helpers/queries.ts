@@ -1,10 +1,12 @@
+import { WalletState } from "@web3-onboard/core";
 import { useQuery } from "react-query";
+import { Signer } from "zksync-web3";
 import {
+  checkIsAssetCollected,
   getAllTrustedTokenBalances,
   getCustomTokenBalance,
   getERC20ContractFunctionResult,
 } from "./utils";
-import { Signer } from "zksync-web3";
 
 export const useGetTrustedTokenBalances = (walletAddress: string) =>
   useQuery(
@@ -45,5 +47,14 @@ export const useERC20Function = (
       ),
     {
       enabled: !!(contractAddresses && functionName && params),
+    }
+  );
+
+export const useCollectedAsset = (id: string, wallet: WalletState | null) =>
+  useQuery(
+    ["collectedAsset", id],
+    async () => checkIsAssetCollected(id, wallet),
+    {
+      enabled: !!(id && wallet),
     }
   );

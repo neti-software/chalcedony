@@ -1,15 +1,15 @@
 import { useConnectWallet } from "@web3-onboard/react";
+import { FC } from "react";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Web3Provider } from "zksync-web3";
 import Box from "../components/Box";
 import CustomTokenLogo from "../components/CustomTokenLogo";
-import { useERC20Function } from "../helpers/queries";
+import { useCollectedAsset, useERC20Function } from "../helpers/queries";
 import { transferERC20FromSmartAccount } from "../helpers/smartAccount";
 import { fromWei } from "../helpers/utils";
 import { did2address, fetchRegisteredAccountVC } from "../helpers/vc";
 import styles from "./Collect.module.scss";
-import { FC } from "react";
-import { toast } from "react-toastify";
 
 const Collect: FC = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +25,11 @@ const Collect: FC = () => {
     "name"
   );
 
+  const { data: isCollected, refetch: refetchIsCollected } = useCollectedAsset(
+    transactionPaid.vc.id,
+    wallet
+  );
+
   const { data: tokenSymbols } = useERC20Function([token], "symbol");
 
   const handleCollect = async () => {
@@ -38,6 +43,7 @@ const Collect: FC = () => {
       const accountAddress = did2address(
         transactionPaid.vc.credentialSubject.id
       );
+
       const registeredAccount = await fetchRegisteredAccountVC(
         accountAddress,
         inBlanco.vc.id,
@@ -51,6 +57,8 @@ const Collect: FC = () => {
         transactionPaid,
         signer
       );
+
+      refetchIsCollected();
 
       toast.success("Success !! ", {
         position: "top-center",
@@ -100,9 +108,9 @@ const Collect: FC = () => {
         <button
           className={styles.collectButton}
           onClick={handleCollect}
-          disabled={!wallet}
+          disabled={!wallet || (wallet && isCollected)}
         >
-          COLLECT
+          {wallet && isCollected ? "COLLECTED !" : "COLLECT"}
         </button>
       </div>
     </div>
