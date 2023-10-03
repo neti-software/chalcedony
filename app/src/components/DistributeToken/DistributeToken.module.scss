@@ -365,6 +365,7 @@
     .qrCodeItem {
       display: flex;
       margin-bottom: 20px;
+      align-items: center;
 
       .generateQrButton {
         width: 226px;
@@ -406,6 +407,22 @@
         img {
           width: 20px;
         }
+      }
+
+      .url {
+        margin-left: 20px;
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+      }
+
+      .copied {
+        margin-left: 20px;
+        font-family: Poppins;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        color: #acb7ff;
       }
     }
   }
