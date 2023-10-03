@@ -8,6 +8,8 @@ import "./index.css";
 import Layout from "./components/Layout/Layout.tsx";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MainContextProvider from "./context";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const web3Onboard = init({
   wallets: [injectedModule()],
@@ -47,6 +49,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <Web3OnboardProvider web3Onboard={web3Onboard}>
       <BrowserRouter>
         <MainContextProvider>
+          <ToastContainer limit={2} />
           <QueryClientProvider client={queryClient}>
             <Layout>
               <App />

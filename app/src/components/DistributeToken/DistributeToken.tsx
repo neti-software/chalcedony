@@ -1,9 +1,19 @@
 import { useConnectWallet } from "@web3-onboard/react";
 import classNames from "classnames";
+import { ethers } from "ethers";
+import QRCode from "qrcode";
 import { ChangeEvent, FC, useEffect, useState } from "react";
+import { Web3Provider } from "zksync-web3";
+import { createSmartAccount } from "../../helpers/accountFactory";
+import {
+  CONTRACTS,
+  getPaymasterContract,
+  getWriteContractByAddress,
+} from "../../helpers/contract";
 import { useERC20Function } from "../../helpers/queries";
 import { ASSETS_ICONS, TESTNET_TOKEN_LIST } from "../../helpers/tokensList";
 import { fromWei, toBN, toWei } from "../../helpers/utils";
+import { createInBlancoVC, createTransactionPaidVC } from "../../helpers/vc";
 import one from "../../images/DistributeToken/1.png";
 import amount from "../../images/DistributeToken/2.00ETH.png";
 import two from "../../images/DistributeToken/2.png";
@@ -17,10 +27,10 @@ import emailIcon from "../../images/DistributeToken/email.png";
 import qrIcon from "../../images/DistributeToken/qrcode.png";
 import Box from "../Box";
 import CustomTokenLogo from "../CustomTokenLogo";
+import DialogWhite from "../DialogWhite";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
-import QRCode from "qrcode";
-import DialogWhite from "../DialogWhite";
+import { toast } from "react-toastify";
 
 const steps: Array<{
   step: string;
@@ -56,6 +66,8 @@ type EmailInput = {
 type QrCodeInput = {
   generated: boolean;
   qrCode: string;
+  payload?: string;
+  url?: string;
 };
 
 const DistributeToken: FC = () => {
@@ -70,7 +82,7 @@ const DistributeToken: FC = () => {
     { email: "" },
   ]);
   const [qrcodeInputs, setQrcodeInputs] = useState<Array<QrCodeInput>>([
-    { generated: false, qrCode: "" },
+    { generated: false, qrCode: "", payload: "", url: "" },
   ]);
 
   const [tokensLeft, setTokensLeft] = useState("0");
@@ -79,13 +91,17 @@ const DistributeToken: FC = () => {
 
   const [{ wallet }] = useConnectWallet();
 
-  const { data: tokenBalances, isLoading: isTokenBalanceLoading } =
-    useERC20Function(TESTNET_TOKEN_LIST, "balanceOf", [
-      wallet?.accounts?.[0].address,
-    ]);
+  const {
+    data: tokenBalances,
+    isLoading: isTokenBalanceLoading,
+  } = useERC20Function(TESTNET_TOKEN_LIST, "balanceOf", [
+    wallet?.accounts?.[0].address,
+  ]);
 
-  const { data: tokenSymbols, isLoading: isTokenSymbolLoading } =
-    useERC20Function(TESTNET_TOKEN_LIST, "symbol");
+  const {
+    data: tokenSymbols,
+    isLoading: isTokenSymbolLoading,
+  } = useERC20Function(TESTNET_TOKEN_LIST, "symbol");
 
   const setDistributionInputs = (value: number) => {
     const newEmailInputs: Array<EmailInput> = [];
@@ -126,6 +142,68 @@ const DistributeToken: FC = () => {
     setAmount(value);
   };
 
+  const generatePayload = async () => {
+    if (!wallet) return;
+
+    const provider = new Web3Provider(wallet.provider, "any");
+    const signer = provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
+    // deploy Account Abstraction contract
+    const smartAccount = await createSmartAccount(signer);
+
+    // create VCs
+    const inBlanco = await createInBlancoVC(
+      smartAccount.contract,
+      smartAccount.did
+    );
+
+    const transactionPaid = await createTransactionPaidVC(
+      smartAccount.contract,
+      signer
+    );
+
+    // transfer ERC-20 tokens
+    const token = getWriteContractByAddress(
+      CONTRACTS.Token,
+      selectedToken,
+      signer
+    );
+
+    const amoutToTransaction = toWei((amount / split).toString());
+
+    const transferTx = await token.transfer(
+      smartAccount.contract.address,
+      amoutToTransaction
+    );
+
+    await transferTx.wait();
+
+    // fund paymaster
+    const paymaster = getPaymasterContract(signer);
+    const expectedBalance = ethers.utils.parseEther("0.1");
+    const currentBalance = await paymaster.balanceOf(signerAddress);
+
+    if (expectedBalance.gt(currentBalance)) {
+      const fundTx = await signer.sendTransaction({
+        to: paymaster.address,
+        value: expectedBalance.sub(currentBalance),
+      });
+
+      await fundTx.wait();
+    }
+
+    // encode it
+    return btoa(
+      JSON.stringify({
+        token: token.address,
+        amount: amoutToTransaction,
+        inBlanco,
+        transactionPaid,
+      })
+    );
+  };
+
   const generateQR = async (value: string) => {
     try {
       const result = await QRCode.toDataURL(value);
@@ -140,8 +218,22 @@ const DistributeToken: FC = () => {
     if (qrcodeInputs[index].generated) return;
 
     const newItems = [...qrcodeInputs];
-    const qrCode = await generateQR("examples.com");
-    newItems[index] = { generated: true, qrCode };
+    const payload = await generatePayload();
+
+    if (payload) {
+      toast.success("Success !! ", {
+        position: "top-center",
+      });
+    } else {
+      toast.error("Error", { position: "top-center" });
+
+      return;
+    }
+    const url = `${window.location.origin}/collect?payload=${payload}`;
+    const qrCode = await generateQR(url);
+
+    newItems[index] = { generated: true, qrCode, payload, url };
+
     setQrcodeInputs(newItems);
   };
 
@@ -167,8 +259,8 @@ const DistributeToken: FC = () => {
 
   useEffect(() => {
     calcTokensLeft();
-  // FIXME calcTokensLeft should probably be defined inside the useEffect or with useMemo and added to deps
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // FIXME calcTokensLeft should probably be defined inside the useEffect or with useMemo and added to deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTokenBalanceLoading, amount, selectedToken, wallet]);
 
   return (
@@ -238,7 +330,13 @@ const DistributeToken: FC = () => {
                         : styles.hide
                     )}
                   >
-                    <div className={styles.logo}>
+                    <div
+                      className={classNames(
+                        !ASSETS_ICONS[tokenAddress]
+                          ? styles.customIcon
+                          : styles.logo
+                      )}
+                    >
                       <img
                         src={ASSETS_ICONS[tokenAddress] ?? customAssetIcon}
                       />
@@ -361,12 +459,15 @@ const DistributeToken: FC = () => {
                               Generate QR-Code
                             </button>
                             {input.generated ? (
-                              <button
-                                className={styles.showQrButton}
-                                onClick={() => showQrCode(index)}
-                              >
-                                <img src={qrIcon} alt="show-qr" />
-                              </button>
+                              <div>
+                                <button
+                                  className={styles.showQrButton}
+                                  onClick={() => showQrCode(index)}
+                                >
+                                  <img src={qrIcon} alt="show-qr" />
+                                </button>
+                                <span>{input.url}</span>
+                              </div>
                             ) : null}
                           </div>
                         );

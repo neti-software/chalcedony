@@ -1,10 +1,15 @@
+import { ContractInterface } from "ethers";
 import { Contract, Provider, Signer } from "zksync-web3";
-import { ContractInterface, ethers } from "ethers";
-import Token from "../contracts/Token.json";
-import AccountFactory from "../contracts/AccountFactory.json";
-import Paymaster from "../contracts/Paymaster.json";
-import IEncodings from "../contracts/IEncodings.json";
 import Account from "../contracts/Account.json";
+import AccountFactory from "../contracts/AccountFactory.json";
+import IEncodings from "../contracts/IEncodings.json";
+import Paymaster from "../contracts/Paymaster.json";
+import Token from "../contracts/Token.json";
+import {
+  ACCOUNT_FACTORY_CONTRACT,
+  PAYMASTER_CONTRACT,
+  RPC_ENDPOINT_URL,
+} from "./config";
 
 export const CONTRACTS = {
   Token,
@@ -19,7 +24,7 @@ const CONTRACTS_CACHE: { [key: string]: Contract } = {};
 export const zkSyncProvider =
   import.meta.env.VITE_NODE_ENV == "test"
     ? {
-        url: "http://localhost:3050",
+        url: RPC_ENDPOINT_URL,
         ethNetwork: "http://localhost:8545",
       }
     : {
@@ -40,16 +45,27 @@ export const getReadContractByAddress = (
   return contractInstance;
 };
 
-export const PAYMASTER_CONTRACT = import.meta.env.VITE_PAYMASTER_CONTRACT ?? ethers.constants.AddressZero;
-export const getPaymasterContract = (
-  signer?: Signer
+export const getWriteContractByAddress = (
+  contract: { abi: ContractInterface },
+  address: string,
+  signer: Signer
 ): Contract => {
-  return getReadContractByAddress(CONTRACTS.Paymaster, PAYMASTER_CONTRACT, signer);
-}
+  const contractInstance = new Contract(address, contract.abi, signer);
+  return contractInstance;
+};
 
-export const ACCOUNT_FACTORY_CONTRACT = import.meta.env.VITE_ACCOUNT_FACTORY_CONTRACT ?? ethers.constants.AddressZero;
-export const getAccountFactoryContract = (
-  signer?: Signer
-): Contract => {
-  return getReadContractByAddress(CONTRACTS.AccountFactory, ACCOUNT_FACTORY_CONTRACT, signer);
-}
+export const getPaymasterContract = (signer: Signer): Contract => {
+  return getWriteContractByAddress(
+    CONTRACTS.Paymaster,
+    PAYMASTER_CONTRACT,
+    signer
+  );
+};
+
+export const getAccountFactoryContract = (signer: Signer): Contract => {
+  return getWriteContractByAddress(
+    CONTRACTS.AccountFactory,
+    ACCOUNT_FACTORY_CONTRACT,
+    signer
+  );
+};
