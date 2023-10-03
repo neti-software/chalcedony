@@ -35,7 +35,7 @@ export const useERC20Function = (
   signer?: Signer
 ) =>
   useQuery(
-    ["testQuery", contractAddresses, functionName],
+    ["erc20FunctionQuery", contractAddresses, functionName, params],
     async () =>
       getERC20ContractFunctionResult(
         contractAddresses,

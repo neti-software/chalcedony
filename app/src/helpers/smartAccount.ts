@@ -1,10 +1,10 @@
-import { EIP712Signer, Signer, types, utils } from "zksync-web3";
-import { CONTRACTS, getReadContractByAddress } from "./contract";
-import { ethers } from "ethers";
-import { encodePaymasterParams } from "./paymaster";
-import { Address } from "zksync-web3/build/src/types";
-import { did2address } from "./vc";
 import { EIP712Service } from "@kacperzuk-neti/eip712service";
+import { ethers } from "ethers";
+import { EIP712Signer, Signer, types, utils } from "zksync-web3";
+import { Address } from "zksync-web3/build/src/types";
+import { CONTRACTS, getWriteContractByAddress } from "./contract";
+import { encodePaymasterParams } from "./paymaster";
+import { did2address } from "./vc";
 
 export async function transferERC20FromSmartAccount(
   tokenAddress: Address,
@@ -14,12 +14,24 @@ export async function transferERC20FromSmartAccount(
   signer: Signer
 ) {
   const recipient = await signer.getAddress();
-  const smartAccountAddress = did2address(transactionPaid.vc.credentialSubject.id);
-  const paymasterParams = await encodePaymasterParams(EIP712Service.onyxCredentialToEIP712Credential(transactionPaid.vc), transactionPaid.proofValue);
-  const token = getReadContractByAddress(CONTRACTS.Token, tokenAddress, signer);
+  const smartAccountAddress = did2address(
+    transactionPaid.vc.credentialSubject.id
+  );
+  const paymasterParams = await encodePaymasterParams(
+    EIP712Service.onyxCredentialToEIP712Credential(transactionPaid.vc),
+    transactionPaid.proofValue
+  );
+  const token = getWriteContractByAddress(
+    CONTRACTS.Token,
+    tokenAddress,
+    signer
+  );
   const balance = await token.balanceOf(smartAccountAddress);
 
-  const transferTx = await token.populateTransaction.transfer(recipient, balance);
+  const transferTx = await token.populateTransaction.transfer(
+    recipient,
+    balance
+  );
   const gasLimit = (await signer.provider.estimateGas(transferTx)).add(1000000);
   const gasPrice = await signer.provider.getGasPrice();
   const chainId = (await signer.provider.getNetwork()).chainId;
@@ -35,8 +47,8 @@ export async function transferERC20FromSmartAccount(
     customData: {
       gasPerPubdata: utils.DEFAULT_GAS_PER_PUBDATA_LIMIT,
       paymasterParams,
-    } as types.Eip712Meta
-  }
+    } as types.Eip712Meta,
+  };
 
   const zksyncSigner = new EIP712Signer(signer, chainId);
   const encodings = new ethers.utils.Interface(CONTRACTS.IEncodings.abi);
@@ -47,10 +59,13 @@ export async function transferERC20FromSmartAccount(
     registeredAccount.proofValue,
     ethers.utils.joinSignature(await zksyncSigner.sign(tx)),
   ];
-  tx.customData.customSignature = encodings.encodeFunctionData("accountSignature", args);
+  tx.customData.customSignature = encodings.encodeFunctionData(
+    "accountSignature",
+    args
+  );
   const serializedTx = utils.serialize({ ...tx });
 
   const sentTx = await signer.provider.sendTransaction(serializedTx);
   const receipt = await sentTx.wait();
-  console.log(receipt.logs.map(l => token.interface.parseLog(l)));
+  console.log(receipt.logs.map((l) => token.interface.parseLog(l)));
 }
