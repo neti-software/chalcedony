@@ -6,7 +6,7 @@ Chalcedony is a set of zkSync contracts and Web App that allows users to transfe
 
 Under the hood, Chalcedony, for each transfer, Chalcedony:
 
-* using [Onyx SSI SDK](https://github.com/jpmorganchase/onyx-ssi-sdk) creates a DID and issues a Verifiable Credential for a Smart Account
+* using [Onyx SSI SDK](https://github.com/jpmorganchase/onyx-ssi-sdk) creates a DID and issues a Verifiable Credential for a Smart Account 
 * funds custom zkSync Paymaster and - using Onyx SSI SDK - issues a Verifiable Credential that allows funding transactions using this Paymaster
 * deploys a Smart Account based on zkSync Account Abstraction, that can be controlled by anyone that presents a proper Verifiable Credential
 
