@@ -38,7 +38,7 @@ export const MainContextProvider = ({ children }: MainContextProviderProps) => {
         setChain({ chainId: CHAIN_ID });
       }
     }
-  }, [wallet, setProvider, setSigner]);
+  }, [wallet, setProvider, setSigner, setChain, connectedChain]);
 
   return (
     <MainContext.Provider
