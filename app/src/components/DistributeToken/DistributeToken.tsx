@@ -2,7 +2,9 @@ import { useConnectWallet } from "@web3-onboard/react";
 import classNames from "classnames";
 import { ethers } from "ethers";
 import QRCode from "qrcode";
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { toast } from "react-toastify";
 import { Web3Provider } from "zksync-web3";
 import { createSmartAccount } from "../../helpers/accountFactory";
 import {
@@ -23,16 +25,13 @@ import at from "../../images/DistributeToken/@.png";
 import token from "../../images/DistributeToken/AVAX.png";
 import connectWalletIcon from "../../images/DistributeToken/ConnectWallet.png";
 import customAssetIcon from "../../images/DistributeToken/customIcon.png";
-import emailIcon from "../../images/DistributeToken/email.png";
 import qrIcon from "../../images/DistributeToken/qrcode.png";
 import Box from "../Box";
 import CustomTokenLogo from "../CustomTokenLogo";
-import DialogWhite from "../DialogWhite";
+import Loader from "../Loader";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
-import { toast } from "react-toastify";
-import Loader from "../Loader";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { MainContext } from "../../context";
 
 const steps: Array<{
   step: string;
@@ -79,7 +78,7 @@ const DistributeToken: FC = () => {
   const [step, setStep] = useState<number>(1);
   const [amount, setAmount] = useState<number>(0);
   const [split, setSplit] = useState<number>(1);
-  const [activeChannel, setActiveChannel] = useState<number>();
+  const [activeChannel] = useState<number>(2);
   const [emailInputs, setEmailInputs] = useState<Array<EmailInput>>([
     { email: "" },
   ]);
@@ -88,12 +87,13 @@ const DistributeToken: FC = () => {
   ]);
 
   const [tokensLeft, setTokensLeft] = useState("0");
-  const [showQrDialog, setShowQrDialog] = useState<boolean>(false);
+  // const [showQrDialog, setShowQrDialog] = useState<boolean>(false);
   const [qrCodeDialogData, setQrCodeDialogData] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCopiedToClipboard, setCopiedToClipboard] = useState(false);
 
   const [{ wallet }] = useConnectWallet();
+  const { isWrongChain } = useContext(MainContext);
 
   const {
     data: tokenBalances,
@@ -120,11 +120,11 @@ const DistributeToken: FC = () => {
     setQrcodeInputs(newQrcodeInputs);
   };
 
-  const changeSplitValue = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setSplit(value);
-    setDistributionInputs(value);
-  };
+  // const changeSplitValue = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const value = Number(e.target.value);
+  //   setSplit(value);
+  //   setDistributionInputs(value);
+  // };
 
   const calcTokensLeft = () => {
     if (!tokenBalances || !tokenBalances[selectedToken] || !wallet) {
@@ -242,6 +242,7 @@ const DistributeToken: FC = () => {
       newItems[index] = { generated: true, qrCode, payload, url };
 
       setQrcodeInputs(newItems);
+      setQrCodeDialogData(qrCode);
     } catch (error) {
       console.log("Error while generating payload", error);
     } finally {
@@ -256,18 +257,18 @@ const DistributeToken: FC = () => {
     setDistributionInputs(1);
   };
 
-  const showQrCode = (index: number) => {
-    if (!qrcodeInputs[index].generated) return;
+  // const showQrCode = (index: number) => {
+  //   if (!qrcodeInputs[index].generated) return;
 
-    setQrCodeDialogData(qrcodeInputs[index].qrCode);
+  //   setQrCodeDialogData(qrcodeInputs[index].qrCode);
 
-    setShowQrDialog(true);
-  };
+  //   setShowQrDialog(true);
+  // };
 
-  const closeQrCode = () => {
-    setShowQrDialog(false);
-    setQrCodeDialogData("");
-  };
+  // const closeQrCode = () => {
+  //   setShowQrDialog(false);
+  //   setQrCodeDialogData("");
+  // };
 
   useEffect(() => {
     calcTokensLeft();
@@ -285,11 +286,11 @@ const DistributeToken: FC = () => {
 
   return (
     <>
-      <DialogWhite isOpen={showQrDialog} handleClose={closeQrCode}>
+      {/* <DialogWhite isOpen={showQrDialog} handleClose={closeQrCode}>
         <div className={styles.dialogQrCode}>
           <img src={qrCodeDialogData} />
         </div>
-      </DialogWhite>
+      </DialogWhite> */}
       {isLoading ? <Loader /> : null}
       <Box>
         <div className={styles.title}>
@@ -330,7 +331,10 @@ const DistributeToken: FC = () => {
               })}
             </div>
             <div className={styles.button}>
-              <button disabled={!wallet} onClick={() => setStep(2)}>
+              <button
+                disabled={!wallet || isWrongChain}
+                onClick={() => setStep(2)}
+              >
                 start
               </button>
             </div>
@@ -372,15 +376,17 @@ const DistributeToken: FC = () => {
               })}
             </div>
             <div className={styles.balance}>
-              <div className={styles.label}>Your balance:{""}</div>
-              {tokenBalances && !isTokenBalanceLoading ? (
-                <div className={styles.value}>{tokensLeft}</div>
+              <div className={styles.label}>Your balance:</div>
+              {tokenBalances &&
+              !isTokenBalanceLoading &&
+              !isTokenSymbolLoading &&
+              tokenSymbols ? (
+                <div className={styles.value}>
+                  {tokensLeft} <span>{tokenSymbols[selectedToken]}</span>
+                </div>
               ) : (
                 "Loading your'e balance..."
-              )}{" "}
-              {!isTokenSymbolLoading && tokenSymbols
-                ? tokenSymbols[selectedToken]
-                : ""}
+              )}
             </div>
             <div className={styles.inputs}>
               <div className={styles.amount}>
@@ -395,7 +401,7 @@ const DistributeToken: FC = () => {
                   onChange={changeAmountValue}
                 />
               </div>
-              <div className={styles.split}>
+              {/* <div className={styles.split}>
                 <div className={styles.label}>Split</div>
                 <SymbolInput
                   value={split}
@@ -404,15 +410,15 @@ const DistributeToken: FC = () => {
                   onChange={changeSplitValue}
                   disabled={true}
                 />
-              </div>
+              </div> */}
             </div>
-            <div className={styles.information}>
+            {/* <div className={styles.information}>
               Each of the users will get: {split == 0 ? 0 : amount / split}{" "}
               {tokenSymbols && !isTokenSymbolLoading
                 ? tokenSymbols[selectedToken]
                 : ""}
-            </div>
-            <div className={styles.label}>Distribution Channel</div>
+            </div> */}
+            {/* <div className={styles.label}>Distribution Channel</div>
             <div className={styles.channels}>
               <button
                 className={classNames(
@@ -433,7 +439,7 @@ const DistributeToken: FC = () => {
               >
                 <img src={qrIcon} alt="qr-code-channel" />
               </button>
-            </div>
+            </div> */}
             <div className={styles.dynamicInputs}>
               {activeChannel === 1 ? (
                 <div className={styles.emails}>
@@ -462,31 +468,33 @@ const DistributeToken: FC = () => {
                 <div className={styles.qrCodes}>
                   {split > 0 ? (
                     <>
-                      <div className={styles.generateButton}>
+                      {/* <div className={styles.generateButton}>
                         <button disabled>Generate & Download All</button>
-                      </div>
+                      </div> 
                       <div className={styles.label}>Distribution QR codes</div>
+                      */}
                       {qrcodeInputs.map((input, index) => {
                         return (
                           <div className={styles.qrCodeItem} key={index}>
                             <button
-                              className={classNames(
-                                styles.generateQrButton,
-                                input.generated ? styles.generatedQr : ""
-                              )}
-                              disabled={input.generated}
+                              className={classNames(styles.generateQrButton)}
+                              disabled={
+                                input.generated || amount <= 0 || isWrongChain
+                              }
                               onClick={() => generateSingleQrCode(index)}
                             >
-                              Generate QR-Code
+                              <img src={qrIcon} alt="show-qr" />
+                              Transfer & Get Link
                             </button>
                             {input.generated ? (
                               <>
-                                <button
+                                {/* <button
                                   className={styles.showQrButton}
                                   onClick={() => showQrCode(index)}
                                 >
                                   <img src={qrIcon} alt="show-qr" />
-                                </button>
+                                </button> */}
+
                                 <CopyToClipboard
                                   text={input.url ?? ""}
                                   onCopy={() => setCopiedToClipboard(true)}
@@ -505,17 +513,13 @@ const DistributeToken: FC = () => {
                                       ${input.url?.slice(
                                         input.url.length - 10,
                                         input.url.length
-                                      )}`}
+                                      )} (click to copy)`}
                                   </div>
                                 </CopyToClipboard>
 
-                                {/* <div className={styles.url}>
-                                  {input.url?.slice(0, 50)}[...]
-                                  {input.url?.slice(
-                                    input.url.length - 10,
-                                    input.url.length
-                                  )}
-                                </div> */}
+                                <div className={styles.dialogQrCode}>
+                                  <img src={qrCodeDialogData} />
+                                </div>
                               </>
                             ) : null}
                           </div>

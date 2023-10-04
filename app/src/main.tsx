@@ -15,19 +15,19 @@ const web3Onboard = init({
   wallets: [injectedModule()],
   chains: [
     {
-      id: "0x10E",
+      id: "0x10E", //270
       token: "ETH",
       label: "zkSync Era Local Testnet",
       rpcUrl: "http://127.0.0.1:3050/",
     },
     {
-      id: "0x144",
+      id: "0x144", //324
       token: "ETH",
       label: "zkSync Era Mainnet",
       rpcUrl: "https://zksync.drpc.org",
     },
     {
-      id: "0x118",
+      id: "0x118", //280
       token: "ETH",
       label: "zkSync Era Testnet",
       rpcUrl: "https://testnet.era.zksync.dev",
