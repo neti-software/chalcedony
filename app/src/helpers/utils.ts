@@ -1,7 +1,12 @@
 import { BigNumber, BigNumberish, utils } from "ethers";
-import { Signer } from "zksync-web3";
+import { Signer, Web3Provider } from "zksync-web3";
 import { RPC_ENDPOINT_URL } from "./config";
-import { CONTRACTS, getReadContractByAddress } from "./contract";
+import {
+  CONTRACTS,
+  getPaymasterContract,
+  getReadContractByAddress,
+} from "./contract";
+import { WalletState } from "@web3-onboard/core";
 type Balances = {
   [key: string]: BigNumber | string;
 };
@@ -99,4 +104,19 @@ export const getERC20ContractFunctionResult = async (
   }
 
   return result;
+};
+
+export const checkIsAssetCollected = async (
+  id: string,
+  wallet: WalletState | null
+) => {
+  if (!wallet) return;
+
+  const provider = new Web3Provider(wallet.provider, "any");
+  const signer = provider.getSigner();
+
+  const paymasterContract = await getPaymasterContract(signer);
+  const linkUsed = await paymasterContract.burnedVCs(id);
+
+  return linkUsed;
 };
