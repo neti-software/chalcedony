@@ -8,6 +8,7 @@ import { useConnectWallet } from "@web3-onboard/react";
 import { toWei } from "../../helpers/utils";
 import Loader from "../Loader";
 import { toast } from "react-toastify";
+import { TEST_TOKEN_CONTRACT } from "../../helpers/config";
 
 const Header: FC = () => {
   const { isWrongChain } = useContext(MainContext);
@@ -24,11 +25,24 @@ const Header: FC = () => {
 
       const token = getWriteContractByAddress(
         CONTRACTS.Token,
-        "0x26b368C3Ed16313eBd6660b72d8e4439a697Cb0B",
+        TEST_TOKEN_CONTRACT,
         signer
       );
 
-      await token.mint(wallet?.accounts?.[0].address, toWei("10"));
+      const tx = await token.mint(wallet?.accounts?.[0].address, toWei("10"));
+      if(window.ethereum)
+        await window.ethereum.request({
+          "method": "wallet_watchAsset",
+          "params": {
+            "type": "ERC20",
+            "options": {
+              "address": token.address,
+              "symbol": await token.symbol(),
+              "decimals": await token.decimals(),
+            }
+          }
+        });
+      await tx.wait();
 
       toast.success("Success !! ", {
         position: "top-center",
