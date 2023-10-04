@@ -1,5 +1,5 @@
 import { useConnectWallet } from "@web3-onboard/react";
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Web3Provider } from "zksync-web3";
@@ -11,12 +11,15 @@ import { transferERC20FromSmartAccount } from "../helpers/smartAccount";
 import { fromWei } from "../helpers/utils";
 import { did2address, fetchRegisteredAccountVC } from "../helpers/vc";
 import styles from "./Collect.module.scss";
+import { MainContext } from "../context";
 
 const Collect: FC = () => {
   const [searchParams] = useSearchParams();
   const fromBase64 = searchParams.get("payload");
   const [{ wallet }] = useConnectWallet();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { isWrongChain } = useContext(MainContext);
 
   const { amount, inBlanco, token, transactionPaid } = JSON.parse(
     atob(fromBase64 ?? "")
@@ -114,7 +117,7 @@ const Collect: FC = () => {
         <button
           className={styles.collectButton}
           onClick={handleCollect}
-          disabled={!wallet || (wallet && isCollected)}
+          disabled={!wallet || (wallet && isCollected) || isWrongChain}
         >
           {wallet && isCollected ? "COLLECTED !" : "COLLECT"}
         </button>
