@@ -66,6 +66,18 @@ export async function transferERC20FromSmartAccount(
   const serializedTx = utils.serialize({ ...tx });
 
   const sentTx = await signer.provider.sendTransaction(serializedTx);
+  if(window.ethereum)
+    await window.ethereum.request({
+      "method": "wallet_watchAsset",
+      "params": {
+        "type": "ERC20",
+        "options": {
+          "address": token.address,
+          "symbol": await token.symbol(),
+          "decimals": await token.decimals(),
+        }
+      }
+    });
   const receipt = await sentTx.wait();
   console.log(receipt.logs.map((l) => token.interface.parseLog(l)));
 }
