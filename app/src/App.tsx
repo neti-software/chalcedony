@@ -12,7 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<CreatePage />} />
         <Route path="/create" element={<CreatePage />} />
-        <Route path="/collect" element={<CollectPage />} />
+        <Route path="/c" element={<CollectPage />} />
       </Routes>
     </Suspense>
   );

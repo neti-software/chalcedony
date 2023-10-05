@@ -12,18 +12,52 @@ import { fromWei } from "../helpers/utils";
 import { did2address, fetchRegisteredAccountVC } from "../helpers/vc";
 import styles from "./Collect.module.scss";
 import { MainContext } from "../context";
+import { ethers } from "ethers";
+import pako from 'pako';
 
 const Collect: FC = () => {
   const [searchParams] = useSearchParams();
-  const fromBase64 = searchParams.get("payload");
+  const fromBase58 = searchParams.get("p");
   const [{ wallet }] = useConnectWallet();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { isWrongChain } = useContext(MainContext);
 
-  const { amount, inBlanco, token, transactionPaid } = JSON.parse(
-    atob(fromBase64 ?? "")
-  );
+  const decoded = ethers.utils.base58.decode(fromBase58 ?? "");
+  const rawData = JSON.parse(new TextDecoder().decode(pako.inflate(decoded)));
+  const token = rawData[0];
+  const amount = rawData[1];
+  const inBlanco = {
+    vc: {
+      "@context": rawData[2],
+      credentialSubject: {
+        id: rawData[3],
+      },
+      issuer: {
+        id: rawData[4],
+      },
+      type: rawData[5],
+      issuanceData: rawData[6],
+      id: rawData[7],
+    },
+    proofValue: ethers.utils.base64.decode(rawData[8]),
+  };
+  const transactionPaid = {
+    vc: {
+      "@context": rawData[9],
+      credentialSubject: {
+        id: rawData[10],
+      },
+      issuer: {
+        id: rawData[11],
+      },
+      type: rawData[12],
+      issuanceData: rawData[13],
+      id: rawData[14],
+    },
+    proofValue: ethers.utils.base64.decode(rawData[15]),
+  };
+
 
   const { data: tokenName, isLoading: isTokenNameLoading } = useERC20Function(
     [token],

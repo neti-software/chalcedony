@@ -2876,6 +2876,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pako@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@types/pako@npm:2.0.1"
+  checksum: be23a275eba2ac6e1251962837c6353a11adda4302881b264786c73f684f44788a28a97714a4c3498f1c95190b3b8c18041140a57dfbb6df1e5520167ff4e9aa
+  languageName: node
+  linkType: hard
+
 "@types/pbkdf2@npm:^3.0.0":
   version: 3.1.0
   resolution: "@types/pbkdf2@npm:3.1.0"
@@ -3437,6 +3444,7 @@ __metadata:
     "@jpmorganchase/onyx-ssi-sdk": ^0.0.1
     "@kacperzuk-neti/eip712service": ^0.0.1
     "@types/node": ^20.6.3
+    "@types/pako": ^2.0.1
     "@types/qrcode": ^1.5.2
     "@types/react": ^18.2.15
     "@types/react-copy-to-clipboard": ^5.0.5
@@ -3453,6 +3461,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-react-refresh: ^0.4.3
     ethers: ^5
+    pako: ^2.1.0
     postcss: ^8.4.29
     qrcode: ^1.5.3
     react: ^18.2.0
@@ -8562,6 +8571,13 @@ __metadata:
   version: 2.2.0
   resolution: "p-try@npm:2.2.0"
   checksum: f8a8e9a7693659383f06aec604ad5ead237c7a261c18048a6e1b5b85a5f8a067e469aa24f5bc009b991ea3b058a87f5065ef4176793a200d4917349881216cae
+  languageName: node
+  linkType: hard
+
+"pako@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "pako@npm:2.1.0"
+  checksum: 71666548644c9a4d056bcaba849ca6fd7242c6cf1af0646d3346f3079a1c7f4a66ffec6f7369ee0dc88f61926c10d6ab05da3e1fca44b83551839e89edd75a3e
   languageName: node
   linkType: hard
 
