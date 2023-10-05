@@ -1,7 +1,7 @@
 {
     "rewrites": [
       {
-        "source": "/collect",
+        "source": "/c",
         "destination": "/"
       }
     ]

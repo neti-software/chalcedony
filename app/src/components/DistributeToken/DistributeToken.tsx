@@ -32,6 +32,7 @@ import Loader from "../Loader";
 import styles from "./DistributeToken.module.scss";
 import SymbolInput from "./SymbolInput";
 import { MainContext } from "../../context";
+import pako from 'pako';
 
 const steps: Array<{
   step: string;
@@ -198,14 +199,28 @@ const DistributeToken: FC = () => {
     }
 
     // encode it
-    return btoa(
-      JSON.stringify({
-        token: token.address,
-        amount: amoutToTransaction,
-        inBlanco,
-        transactionPaid,
-      })
-    );
+    const deflated = 
+      pako.deflate(
+        JSON.stringify([
+          token.address,
+          amoutToTransaction,
+          inBlanco.vc["@context"],
+          inBlanco.vc.credentialSubject.id,
+          inBlanco.vc.issuer.id,
+          inBlanco.vc.type,
+          inBlanco.vc.issuanceDate,
+          inBlanco.vc.id,
+          ethers.utils.base64.encode(inBlanco.proofValue),
+          transactionPaid.vc["@context"],
+          transactionPaid.vc.credentialSubject.id,
+          transactionPaid.vc.issuer.id,
+          transactionPaid.vc.type,
+          transactionPaid.vc.issuanceDate,
+          transactionPaid.vc.id,
+          ethers.utils.base64.encode(transactionPaid.proofValue),
+        ])
+      );
+    return ethers.utils.base58.encode(deflated);
   };
 
   const generateQR = async (value: string) => {
@@ -236,7 +251,7 @@ const DistributeToken: FC = () => {
         return;
       }
 
-      const url = `${window.location.origin}/collect?payload=${payload}`;
+      const url = `${window.location.origin}/c?p=${payload}`;
       const qrCode = await generateQR(url);
 
       newItems[index] = { generated: true, qrCode, payload, url };
