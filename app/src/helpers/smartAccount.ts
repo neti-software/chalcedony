@@ -39,7 +39,7 @@ export async function transferERC20FromSmartAccount(
   const tx = {
     ...transferTx,
     from: smartAccountAddress,
-    gasLimit: 150000,
+    gasLimit: 500000,
     gasPrice,
     chainId,
     nonce: await signer.provider.getTransactionCount(smartAccountAddress),
@@ -80,6 +80,5 @@ export async function transferERC20FromSmartAccount(
         }
       }
     });
-  const receipt = await sentTx.wait();
-  console.log(receipt.logs.map((l) => token.interface.parseLog(l)));
+  await sentTx.wait();
 }
