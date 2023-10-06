@@ -105,6 +105,7 @@ const Collect: FC = () => {
       });
     } catch (error) {
       toast.error("Error", { position: "top-center" });
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
