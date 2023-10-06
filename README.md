@@ -33,7 +33,7 @@ We've implemented an zkSync Account Abstraction based Smart Account contract, th
 
 Similarly to the Smart Account, we've implemented a zkSync Custom Paymaster, that will pay for the transaction if it's provided with a correct Verifiable Credential.
 
-[Click here to see the Smart Account contract](./contracts/contracts/Paymaster.sol).
+[Click here to see the Paymaster contract](./contracts/contracts/Paymaster.sol).
 
 ### Application flow
 
