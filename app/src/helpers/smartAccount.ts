@@ -64,6 +64,7 @@ export async function transferERC20FromSmartAccount(
     "accountSignature",
     args
   );
+  console.log(tx);
   const serializedTx = utils.serialize({ ...tx });
 
   const sentTx = await provider.sendTransaction(serializedTx);
