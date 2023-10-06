@@ -61,7 +61,7 @@ const Header: FC = () => {
       <div className={styles.container}>
         <div className={styles.menu}>
           <div className={styles.pages}>
-            <a href={"/create"} rel="noreferrer">
+            <a href={"/"} rel="noreferrer">
               Create
             </a>
           </div>

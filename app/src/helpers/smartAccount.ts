@@ -1,10 +1,11 @@
 import { EIP712Service } from "@kacperzuk-neti/eip712service";
 import { ethers } from "ethers";
-import { EIP712Signer, Signer, types, utils } from "zksync-web3";
+import { EIP712Signer, Provider, Signer, types, utils } from "zksync-web3";
 import { Address } from "zksync-web3/build/src/types";
 import { CONTRACTS, getWriteContractByAddress } from "./contract";
 import { encodePaymasterParams } from "./paymaster";
 import { did2address } from "./vc";
+import { RPC_ENDPOINT_URL } from "./config";
 
 export async function transferERC20FromSmartAccount(
   tokenAddress: Address,
@@ -13,6 +14,7 @@ export async function transferERC20FromSmartAccount(
   transactionPaid: any,
   signer: Signer
 ) {
+  const provider = new Provider(RPC_ENDPOINT_URL, 'any');
   const recipient = await signer.getAddress();
   const smartAccountAddress = did2address(
     transactionPaid.vc.credentialSubject.id
@@ -32,13 +34,12 @@ export async function transferERC20FromSmartAccount(
     recipient,
     balance
   );
-  const gasLimit = (await signer.provider.estimateGas(transferTx)).add(1000000);
   const gasPrice = await signer.provider.getGasPrice();
   const chainId = (await signer.provider.getNetwork()).chainId;
   const tx = {
     ...transferTx,
     from: smartAccountAddress,
-    gasLimit,
+    gasLimit: 150000,
     gasPrice,
     chainId,
     nonce: await signer.provider.getTransactionCount(smartAccountAddress),
@@ -63,9 +64,10 @@ export async function transferERC20FromSmartAccount(
     "accountSignature",
     args
   );
+  console.log(tx);
   const serializedTx = utils.serialize({ ...tx });
 
-  const sentTx = await signer.provider.sendTransaction(serializedTx);
+  const sentTx = await provider.sendTransaction(serializedTx);
   if(window.ethereum)
     await window.ethereum.request({
       "method": "wallet_watchAsset",
